@@ -13,7 +13,7 @@ const client = new Client({
     ]
 });
 
-require('./eventos/bienvenida')(client);
+require('./bienvenida')(client);
 
 // Cuando el bot se conecta
 client.once(Events.ClientReady, readyClient => {
