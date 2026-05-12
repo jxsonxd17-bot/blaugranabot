@@ -18,6 +18,7 @@ const client = new Client({
 require('./bienvenida')(client);
 require('./partido')(client);
 require('./tabla')(client);
+require('./rata')(client);
 
 client.once(Events.ClientReady, readyClient => {
 
