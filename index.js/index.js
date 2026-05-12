@@ -13,8 +13,11 @@ const client = new Client({
     ]
 });
 
+require('./eventos/bienvenida')(client);
+
 // Cuando el bot se conecta
 client.once(Events.ClientReady, readyClient => {
+
     console.log(`✅ Bot conectado como ${readyClient.user.tag}`);
 });
 
