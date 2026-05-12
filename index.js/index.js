@@ -9,13 +9,15 @@ const {
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
     ]
 });
 
 require('./bienvenida')(client);
+require('./partido')(client);
 
-// Cuando el bot se conecta
 client.once(Events.ClientReady, readyClient => {
 
     console.log(`✅ Bot conectado como ${readyClient.user.tag}`);
