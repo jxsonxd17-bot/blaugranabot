@@ -23,9 +23,16 @@ module.exports = (client) => {
 
                 const top10 = tabla.slice(0, 10);
 
-                const standings = top10.map(team =>
-                    `${team.position}. ${team.team.name} — ${team.points} pts`
-                ).join('\n');
+                const standings = top10.map(team => {
+
+    const nombre =
+        team.team.name === 'FC Barcelona'
+            ? `**${team.team.name}** 🔵🔴`
+            : team.team.name;
+
+    return `${team.position}. ${nombre} — ${team.points} pts`;
+
+}).join('\n');
 
                 message.reply({
                     embeds: [
