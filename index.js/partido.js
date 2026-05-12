@@ -14,7 +14,7 @@ module.exports = (client) => {
                     'https://api.football-data.org/v4/teams/81/matches?status=SCHEDULED',
                     {
                         headers: {
-                            'X-Auth-Token': '7eb2e267c6b04b6dab6faf333ca3783c'
+                            'X-Auth-Token': process.env.FOOTBALL_API
                         }
                     }
                 );
@@ -26,6 +26,13 @@ module.exports = (client) => {
                         ? partido.awayTeam.name
                         : partido.homeTeam.name;
 
+                const fecha = new Date(partido.utcDate);
+
+                const fechaFormateada = fecha.toLocaleString('es-ES', {
+                    dateStyle: 'full',
+                    timeStyle: 'short'
+                });
+
                 message.reply({
                     embeds: [
                         {
@@ -35,7 +42,7 @@ module.exports = (client) => {
 
                             description:
                                 `⚽ FC Barcelona vs ${rival}\n\n` +
-                                `📅 ${partido.utcDate}`,
+                                `📅 ${fechaFormateada}`,
 
                             footer: {
                                 text: 'BlaugranaBot'
