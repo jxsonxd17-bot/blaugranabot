@@ -1,12 +1,19 @@
 module.exports = (client) => {
 
-    client.on('guildMemberAdd', member => {
+    client.on('guildMemberAdd', async member => {
+
+        console.log('ALGUIEN ENTRO');
 
         const channelId = '1503552116999065782';
 
         const channel = member.guild.channels.cache.get(channelId);
 
-        if (!channel) return;
+        if (!channel) {
+            console.log('NO ENCONTRE EL CANAL');
+            return;
+        }
+
+        console.log('ENCONTRE EL CANAL');
 
         channel.send({
             embeds: [
