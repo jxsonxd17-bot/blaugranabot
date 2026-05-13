@@ -34,8 +34,8 @@ module.exports = (client) => {
             const local = partido.homeTeam.name;
             const visitante = partido.awayTeam.name;
 
-            const golesLocal = partido.score.fullTime.home ?? 0;
-            const golesVisitante = partido.score.fullTime.away ?? 0;
+            const golesLocal = partido.score.current.home ?? 0;
+            const golesVisitante = partido.score.current.away ?? 0;
 
             const minuto = partido.minute || 0;
 
@@ -46,11 +46,11 @@ module.exports = (client) => {
 
                 canal.send(
                     `‼️ **En Vivo** ‼️\n\n` +
-                    `🏆 | LaLiga EA Sports 🇪🇸\n\n` +
-                    `📆 | Jornada de LaLiga.\n\n` +
-                    `🏟️ | ${partido.venue || 'Spotify Camp Nou'}\n\n` +
+                    `🏆 | LaLiga - Jornada 36 🇪🇸\n\n` +
+                    `📆 | FC Barcelona vs Alavés.\n\n` +
+                    `🏟️ | Estadio Mendizorroza\n\n` +
                     `⌚️ | ¡Comenzó el partido!\n\n` +
-                    `🔵 ${local} | 0️⃣ - 0️⃣ | ${visitante} ⚪️\n\n` +
+                    `🔵 ${local} | 0️⃣ - 0️⃣ | ${visitante} 🟠\n\n` +
                     `@LaCasaBlaugrana💙❤️`
                 );
             }
@@ -61,7 +61,7 @@ module.exports = (client) => {
                 canal.send(
                     `🚨 **GOOOOOOOOOOL** 🚨\n\n` +
                     `⌚️ ${minuto}'\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} ⚪️\n\n` +
+                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟠\n\n` +
                     `@LaCasaBlaugrana💙❤️`
                 );
             }
@@ -76,9 +76,9 @@ module.exports = (client) => {
 
                 canal.send(
                     `‼️ **En Vivo** ‼️\n\n` +
-                    `🏆 | LaLiga EA Sports 🇪🇸\n\n` +
+                    `🏆 | LaLiga - Jornada 36 🇪🇸\n\n` +
                     `⌚️ ${minuto}'\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} ⚪️\n\n` +
+                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟠\n\n` +
                     `@LaCasaBlaugrana💙❤️`
                 );
 
@@ -90,7 +90,7 @@ module.exports = (client) => {
 
                 canal.send(
                     `⏱️ **MEDIO TIEMPO**\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} ⚪️\n\n` +
+                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟠\n\n` +
                     `@LaCasaBlaugrana💙❤️`
                 );
             }
@@ -100,7 +100,7 @@ module.exports = (client) => {
 
                 canal.send(
                     `🏁 **FINAL DEL PARTIDO**\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} ⚪️\n\n` +
+                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟠\n\n` +
                     `🔵🔴 VISCA EL BARÇA\n\n` +
                     `@LaCasaBlaugrana💙❤️`
                 );
