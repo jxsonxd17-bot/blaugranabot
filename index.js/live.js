@@ -46,25 +46,42 @@ module.exports = (client) => {
 
                 canal.send(
                     `‼️ **En Vivo** ‼️\n\n` +
-                    `🏆 | LaLiga - Jornada 36 🇪🇸\n\n` +
-                    `📆 | FC Barcelona vs Alavés.\n\n` +
-                    `🏟️ | Estadio Mendizorroza\n\n` +
+                    `🏆 | Laliga EA Sports\n\n` +
+                    `📆 | Jornada 37.\n\n` +
+                    `🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España\n\n` +
                     `⌚️ | ¡Comenzó el partido!\n\n` +
-                    `🔵 ${local} | 0️⃣ - 0️⃣ | ${visitante} 🟠\n\n` +
+                    `🔵 ${local} | 0️⃣ - 0️⃣ | ${visitante} 🟢\n\n` +
                     `@LaCasaBlaugrana💙❤️`
                 );
             }
 
             // GOLES
-            if (marcadorActual !== ultimoMarcador && ultimoMarcador !== '') {
+if (marcadorActual !== ultimoMarcador && ultimoMarcador !== '') {
 
-                canal.send(
-                    `🚨 **GOOOOOOOOOOL** 🚨\n\n` +
-                    `⌚️ ${minuto}'\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟠\n\n` +
-                    `@LaCasaBlaugrana💙❤️`
-                );
-            }
+    const barcaMarco =
+        (local === 'FC Barcelona' && golesLocal > parseInt(ultimoMarcador.split('-')[0])) ||
+
+        (visitante === 'FC Barcelona' && golesVisitante > parseInt(ultimoMarcador.split('-')[1]));
+
+    if (barcaMarco) {
+
+        canal.send(
+            `🚨 **GOOOOOOOOOOL DEL BARÇA** 🚨\n\n` +
+            `⌚️ ${minuto}'\n\n` +
+            `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
+            `@LaCasaBlaugrana💙❤️`
+        );
+
+    } else {
+
+        canal.send(
+            `⚽ Gol del rival.\n\n` +
+            `⌚️ ${minuto}'\n\n` +
+            `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
+            `@LaCasaBlaugrana💙❤️`
+        );
+    }
+}
 
             // CADA 15 MINUTOS
             const bloques = [15, 30, 45, 60, 75, 90];
@@ -76,9 +93,11 @@ module.exports = (client) => {
 
                 canal.send(
                     `‼️ **En Vivo** ‼️\n\n` +
-                    `🏆 | LaLiga - Jornada 36 🇪🇸\n\n` +
+                    `🏆 | Laliga EA Sports\n\n` +
+                    `📆 | Jornada 37.\n\n` +
+                    `🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España\n\n` +
                     `⌚️ ${minuto}'\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟠\n\n` +
+                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
                     `@LaCasaBlaugrana💙❤️`
                 );
 
@@ -89,8 +108,11 @@ module.exports = (client) => {
             if (estado === 'PAUSED' && ultimoEstado !== 'PAUSED') {
 
                 canal.send(
-                    `⏱️ **MEDIO TIEMPO**\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟠\n\n` +
+                    `⏱️ **MEDIO TIEMPO** ⏱️\n\n` +
+                    `🏆 | Laliga EA Sports\n\n` +
+                    `📆 | Jornada 37.\n\n` +
+                    `🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España\n\n` +
+                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
                     `@LaCasaBlaugrana💙❤️`
                 );
             }
@@ -99,9 +121,11 @@ module.exports = (client) => {
             if (estado === 'FINISHED' && ultimoEstado !== 'FINISHED') {
 
                 canal.send(
-                    `🏁 **FINAL DEL PARTIDO**\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟠\n\n` +
-                    `🔵🔴 VISCA EL BARÇA\n\n` +
+                    `✅ **FINAL DEL PARTIDO** ✅\n\n` +
+                    `🏆 | Laliga EA Sports\n\n` +
+                    `📆 | Jornada 37.\n\n` +
+                    `🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España\n\n` +
+                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
                     `@LaCasaBlaugrana💙❤️`
                 );
             }
