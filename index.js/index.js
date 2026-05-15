@@ -21,6 +21,7 @@ require('./tabla')(client);
 require('./rata')(client);
 require('./live')(client);
 require('./anuncio')(client);
+require('./impostor')(client);
 
 client.once(Events.ClientReady, readyClient => {
 
