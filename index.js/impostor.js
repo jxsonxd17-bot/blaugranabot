@@ -60,11 +60,21 @@ module.exports = (client) => {
             });
 
             const embed = new EmbedBuilder()
-            .setColor("#004D98")
-            .setTitle("⚙️ CONFIGURACIÓN")
-            .setDescription(
-            `🕵️ ¿Quieres que los impostores se conozcan entre sí?`
-            );
+    .setColor("#004D98")
+    .setTitle("⚽ PARTIDA CREADA")
+    .setDescription(
+`👑 Host: ${message.author}
+
+👥 Jugadores:
+1
+
+📌 Usa:
+!unirse`
+    );
+
+return message.channel.send({
+    embeds: [embed]
+});
 
 const botones = new ActionRowBuilder()
     .addComponents(
@@ -161,6 +171,94 @@ ${partida.jugadores.length}`
             });
         }
 
+// =======================
+// SALIR
+// =======================
+
+if (contenido === "!salir") {
+
+    const partida =
+        partidas.get(message.guild.id);
+
+    if (!partida) {
+        return message.reply(
+            "❌ No hay partida."
+        );
+    }
+
+    partida.jugadores =
+        partida.jugadores.filter(
+            id => id !== message.author.id
+        );
+
+    const embed =
+        new EmbedBuilder()
+        .setColor("#D72638")
+        .setTitle("🚪 JUGADOR SALIÓ")
+        .setDescription(
+`${message.author} salió de la partida.`
+        );
+
+    await message.channel.send({
+        embeds: [embed]
+    });
+
+    // SI NO QUEDA NADIE
+
+    if (
+        partida.jugadores.length === 0
+    ) {
+
+        partidas.delete(message.guild.id);
+
+        return message.channel.send(
+            "💀 La partida fue eliminada."
+        );
+    }
+
+    return;
+}
+
+// =======================
+// CANCELAR
+// =======================
+
+if (contenido === "!cancelar") {
+
+    const partida =
+        partidas.get(message.guild.id);
+
+    if (!partida) {
+        return message.reply(
+            "❌ No hay partida."
+        );
+    }
+
+    if (
+        message.author.id !==
+        partida.host
+    ) {
+
+        return message.reply(
+            "❌ Solo el host puede cancelar."
+        );
+    }
+
+    partidas.delete(message.guild.id);
+
+    const embed =
+        new EmbedBuilder()
+        .setColor("#D72638")
+        .setTitle("🛑 PARTIDA CANCELADA")
+        .setDescription(
+`👑 ${message.author} canceló la partida.`
+        );
+
+    return message.channel.send({
+        embeds: [embed]
+    });
+}
+
         // =======================
         // INICIAR
         // =======================
@@ -186,7 +284,33 @@ ${partida.jugadores.length}`
 
             if (
                 partida.jugadores.length < 3
-            ) {
+            ) 
+            
+            const embed = new EmbedBuilder()
+    .setColor("#004D98")
+    .setTitle("⚙️ CONFIGURACIÓN")
+    .setDescription(
+`🕵️ ¿Quieres que los impostores se conozcan entre sí?`
+    );
+
+const botones = new ActionRowBuilder()
+    .addComponents(
+
+        new ButtonBuilder()
+            .setCustomId("team_si")
+            .setLabel("Sí")
+            .setStyle(ButtonStyle.Success),
+
+        new ButtonBuilder()
+            .setCustomId("team_no")
+            .setLabel("No")
+            .setStyle(ButtonStyle.Danger)
+    );
+
+return message.channel.send({
+    embeds: [embed],
+    components: [botones]
+});{
                 return message.reply(
                     "⚠️ Necesitan mínimo 3 jugadores."
                 );
