@@ -20,6 +20,7 @@ require('./partido')(client);
 require('./tabla')(client);
 require('./rata')(client);
 require('./live')(client);
+require('./anuncio')(client);
 
 client.once(Events.ClientReady, readyClient => {
 
