@@ -1,3 +1,7 @@
+const {
+    EmbedBuilder
+} = require("discord.js");
+
 const palabras = require("./data/futbolistas");
 
 // =======================
@@ -49,11 +53,19 @@ module.exports = (client) => {
                 impostores: []
             });
 
-            return message.channel.send(
-`⚽ PARTIDA CREADA
+            const embed = new EmbedBuilder()
+                .setColor("#004D98")
+                .setTitle("⚽ PARTIDA CREADA")
+                .setDescription(
+                    `👑 Host: ${message.author}`
+                )
+                .setFooter({
+                    text: "Impostor Futbolero"
+                });
 
-👑 Host: ${message.author.username}`
-            );
+            return message.channel.send({
+                embeds: [embed]
+            });
         }
 
         // =======================
@@ -62,18 +74,23 @@ module.exports = (client) => {
 
         if (contenido === "!comandos") {
 
-            return message.channel.send(
-`📌 COMANDOS
+            const embed = new EmbedBuilder()
+                .setColor("#004D98")
+                .setTitle("📌 COMANDOS")
+                .setDescription(
+`⚽ !crear
+⚽ !unirse
+⚽ !iniciar
+⚽ !salir
+⚽ !cancelar
+⚽ !pista (tu pista)
+⚽ !votacion
+⚽ !votar @usuario`
+                );
 
-!crear
-!unirse
-!iniciar
-!salir
-!cancelar
-!pista (tu pista)
-!votacion
-!votar @usuario`
-            );
+            return message.channel.send({
+                embeds: [embed]
+            });
         }
 
         // =======================
@@ -111,78 +128,19 @@ module.exports = (client) => {
                 message.author.id
             );
 
-            return message.channel.send(
-`✅ ${message.author.username} se unió.
+            const embed = new EmbedBuilder()
+                .setColor("#00A86B")
+                .setTitle("✅ JUGADOR UNIDO")
+                .setDescription(
+`👤 ${message.author}
 
-👥 Jugadores: ${partida.jugadores.length}`
-            );
-        }
-
-        // =======================
-        // SALIR
-        // =======================
-
-        if (contenido === "!salir") {
-
-            const partida =
-                partidas.get(message.guild.id);
-
-            if (!partida) {
-                return message.reply(
-                    "❌ No hay partida."
-                );
-            }
-
-            partida.jugadores =
-                partida.jugadores.filter(
-                    id => id !== message.author.id
+👥 Jugadores:
+${partida.jugadores.length}`
                 );
 
-            message.channel.send(
-`🚪 ${message.author.username} salió de la partida.`
-            );
-
-            if (partida.jugadores.length === 0) {
-
-                partidas.delete(message.guild.id);
-
-                return message.channel.send(
-                    "💀 La partida fue eliminada."
-                );
-            }
-
-            return;
-        }
-
-        // =======================
-        // CANCELAR
-        // =======================
-
-        if (contenido === "!cancelar") {
-
-            const partida =
-                partidas.get(message.guild.id);
-
-            if (!partida) {
-                return message.reply(
-                    "❌ No hay partida."
-                );
-            }
-
-            if (
-                message.author.id !==
-                partida.host
-            ) {
-                return message.reply(
-                    "❌ Solo el host puede cancelar."
-                );
-            }
-
-            partidas.delete(message.guild.id);
-
-            return message.channel.send(
-                "🛑 La partida fue cancelada."
-            );
+            return message.channel.send({
+                embeds: [embed]
+            });
         }
 
         // =======================
@@ -333,23 +291,34 @@ ${palabra}`
                     partida.ordenTurnos[0]
                 );
 
-            return message.channel.send(
-`🔥 LA PARTIDA COMENZÓ
+            const textoImpostor =
+                cantidadImpostores === 1
+                    ? "🕵️ Hay 1 impostor"
+                    : `🕵️ Hay ${cantidadImpostores} impostores`;
 
-🕵️ Impostores: ${cantidadImpostores}
+            const embed = new EmbedBuilder()
+                .setColor("#004D98")
+                .setTitle("🔥 LA PARTIDA COMENZÓ")
+                .setDescription(
+`${textoImpostor}
 
-🎤 PRIMER TURNO:
-
+🎤 Primer turno:
 👉 ${primerJugador}
 
 📌 Usa:
-
 !pista (tu pista)`
-            );
+                )
+                .setFooter({
+                    text: "Impostor Futbolero"
+                });
+
+            return message.channel.send({
+                embeds: [embed]
+            });
         }
 
         // =======================
-        // SISTEMA DE TURNOS
+        // TURNOS
         // =======================
 
         const partidaTurno =
@@ -391,8 +360,6 @@ ${palabra}`
                         partidaTurno.turnoActual
                     ];
 
-                // NO ES SU TURNO
-
                 if (
                     message.author.id !==
                     jugadorActualID
@@ -401,8 +368,6 @@ ${palabra}`
                     await message.delete().catch(() => {});
                     return;
                 }
-
-                // OBTENER PISTA
 
                 const pista =
                     message.content
@@ -416,23 +381,29 @@ ${palabra}`
                     );
                 }
 
-                // GUARDAR
-
                 partidaTurno.pistas[
                     message.author.id
                 ] = pista;
 
-                // BORRAR COMANDO
-
                 await message.delete().catch(() => {});
 
-                // MOSTRAR PISTA
+                // EMBED PISTA
 
-                await message.channel.send(
-`👤 ${message.author.username}:
+                const embedPista =
+                    new EmbedBuilder()
+                    .setColor("#1E1E1E")
+                    .setAuthor({
+                        name: message.author.username,
+                        iconURL:
+                        message.author.displayAvatarURL()
+                    })
+                    .setDescription(
+`💬 "${pista}"`
+                    );
 
-"${pista}"`
-                );
+                await message.channel.send({
+                    embeds: [embedPista]
+                });
 
                 partidaTurno.turnoActual++;
 
@@ -445,40 +416,26 @@ ${palabra}`
 
                     partidaTurno.faseVotacion = true;
 
-                    let resumen =
-`📋 RESUMEN DE PISTAS:
+                    const embed =
+                        new EmbedBuilder()
+                        .setColor("#F4C542")
+                        .setTitle(
+                            "🗣️ FASE DE DISCUSIÓN"
+                        )
+                        .setDescription(
+`Ahora pueden hablar libremente.
 
-`;
-
-                    for (
-                        const jugadorID
-                        of partidaTurno.ordenTurnos
-                    ) {
-
-                        const usuario =
-                            await client.users.fetch(
-                                jugadorID
-                            );
-
-                        resumen +=
-`👤 ${usuario.username}:
-"${partidaTurno.pistas[jugadorID]}"
-
-`;
-                    }
-
-                    return message.channel.send(
-`${resumen}
-
-🗣️ PUEDEN HABLAR LIBREMENTE
-
-📌 Cuando quieran empezar la votación:
+📌 Cuando quieran votar:
 
 !votacion`
-                    );
+                        );
+
+                    return message.channel.send({
+                        embeds: [embed]
+                    });
                 }
 
-                // SIGUIENTE
+                // SIGUIENTE TURNO
 
                 const siguienteJugador =
                     await client.users.fetch(
@@ -487,15 +444,20 @@ ${palabra}`
                         ]
                     );
 
-                return message.channel.send(
-`🎤 TURNO DE:
-
-👉 ${siguienteJugador}
+                const embedTurno =
+                    new EmbedBuilder()
+                    .setColor("#004D98")
+                    .setTitle("🎤 NUEVO TURNO")
+                    .setDescription(
+`👉 ${siguienteJugador}
 
 📌 Usa:
-
 !pista (tu pista)`
-                );
+                    );
+
+                return message.channel.send({
+                    embeds: [embedTurno]
+                });
             }
         }
 
@@ -528,13 +490,19 @@ ${palabra}`
 
             partida.votacionIniciada = true;
 
-            return message.channel.send(
-`🗳️ ¡LA VOTACIÓN HA COMENZADO!
-
-📌 Usa:
+            const embed =
+                new EmbedBuilder()
+                .setColor("#D72638")
+                .setTitle("🗳️ VOTACIÓN")
+                .setDescription(
+`📌 Usa:
 
 !votar @usuario`
-            );
+                );
+
+            return message.channel.send({
+                embeds: [embed]
+            });
         }
 
         // =======================
@@ -549,18 +517,6 @@ ${palabra}`
             if (!partida) {
                 return message.reply(
                     "❌ No hay partida activa."
-                );
-            }
-
-            if (!partida.iniciada) {
-                return message.reply(
-                    "⚠️ La partida todavía no empezó."
-                );
-            }
-
-            if (!partida.faseVotacion) {
-                return message.reply(
-                    "⚠️ Todavía no pueden votar."
                 );
             }
 
@@ -579,22 +535,6 @@ ${palabra}`
                 );
             }
 
-            if (mencionado.bot) {
-                return message.reply(
-                    "🤨 No puedes votar bots."
-                );
-            }
-
-            if (
-                !partida.jugadores.includes(
-                    mencionado.id
-                )
-            ) {
-                return message.reply(
-                    "⚠️ No está jugando."
-                );
-            }
-
             if (
                 partida.votos[
                     message.author.id
@@ -609,9 +549,16 @@ ${palabra}`
                 message.author.id
             ] = mencionado.id;
 
-            message.channel.send(
-`🗳️ ${message.author.username} votó por ${mencionado.username}`
-            );
+            const embedVoto =
+                new EmbedBuilder()
+                .setColor("#D72638")
+                .setDescription(
+`🗳️ ${message.author} votó por ${mencionado}`
+                );
+
+            await message.channel.send({
+                embeds: [embedVoto]
+            });
 
             // TODOS VOTARON
 
@@ -663,38 +610,35 @@ ${palabra}`
                         ? "🕵️ EL IMPOSTOR ERA..."
                         : "🕵️ LOS IMPOSTORES ERAN...";
 
-                if (
+                const ganaronJugadores =
                     partida.impostores.includes(
                         masVotado
+                    );
+
+                const embedFinal =
+                    new EmbedBuilder()
+                    .setColor(
+                        ganaronJugadores
+                            ? "#00A86B"
+                            : "#D72638"
                     )
-                ) {
+                    .setTitle(
+                        ganaronJugadores
+                            ? "🎉 GANARON LOS JUGADORES"
+                            : "👑 GANARON LOS IMPOSTORES"
+                    )
+                    .setDescription(
+`${textoImpostores}
 
-                    message.channel.send(
-`━━━━━━━━━━━━━━
-${textoImpostores}
-${impostoresTexto.join(", ")}
-━━━━━━━━━━━━━━
+⚽ ${impostoresTexto.join(", ")}
 
-⚽ La palabra era:
-${partida.palabra}
-
-🎉 ¡Ganaron los jugadores!`
+📌 La palabra era:
+"${partida.palabra}"`
                     );
 
-                } else {
-
-                    message.channel.send(
-`━━━━━━━━━━━━━━
-${textoImpostores}
-${impostoresTexto.join(", ")}
-━━━━━━━━━━━━━━
-
-⚽ La palabra era:
-${partida.palabra}
-
-👑 ¡Ganaron los impostores!`
-                    );
-                }
+                await message.channel.send({
+                    embeds: [embedFinal]
+                });
 
                 partidas.delete(
                     message.guild.id
