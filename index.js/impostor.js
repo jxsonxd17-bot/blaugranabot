@@ -31,6 +31,30 @@ module.exports = (client) => {
 
         const contenido = message.content.toLowerCase();
 
+        const partida =
+    partidas.get(message.guild.id);
+
+if (partida) {
+
+    // SOLO EL HOST
+    // PUEDE MANTENER LA SALA
+
+    if (
+        partida.alertaInactividad &&
+        message.author.id === partida.host
+    ) {
+
+        partida.alertaInactividad = false;
+
+        partida.ultimaActividad =
+            Date.now();
+
+        message.channel.send(
+            "✅ Sala mantenida activa."
+        );
+    }
+}
+
         // =======================
         // CREAR
         // =======================
@@ -56,7 +80,9 @@ module.exports = (client) => {
                 impostores: [],
                 modoEquipo: false,
                 configurando: true,
-                maxImpostores: 1
+                maxImpostores: 1,
+                ultimaActividad: Date.now(),
+                alertaInactividad: false
             });
 
             const embed = new EmbedBuilder()
@@ -155,6 +181,9 @@ return message.channel.send({
             partida.jugadores.push(
                 message.author.id
             );
+
+            partida.ultimaActividad =
+            Date.now();
 
             const embed = new EmbedBuilder()
                 .setColor("#00A86B")
@@ -268,6 +297,9 @@ if (contenido === "!cancelar") {
             const partida =
                 partidas.get(message.guild.id);
 
+                partida.ultimaActividad =
+                Date.now();
+
             if (!partida) {
                 return message.reply(
                     "❌ No hay partida."
@@ -297,30 +329,6 @@ const embed = new EmbedBuilder()
 .setDescription(
 `🕵️ ¿Quieres que los impostores se conozcan entre sí?`
 );
-
-const botones = new ActionRowBuilder()
-.addComponents(
-
-new ButtonBuilder()
-.setCustomId("team_si")
-.setLabel("Sí")
-.setStyle(ButtonStyle.Success),
-
-new ButtonBuilder()
-.setCustomId("team_no")
-.setLabel("No")
-.setStyle(ButtonStyle.Danger)
-);
-
-return message.channel.send({
-embeds: [embed],
-components: [botones]
-});
-{
-                return message.reply(
-                    "⚠️ Necesitan mínimo 3 jugadores."
-                );
-            }
 
             const palabra =
                 palabras[
@@ -629,6 +637,9 @@ ${mensaje}`
                     message.author.id
                 ] = pista;
 
+                partida.ultimaActividad =
+                Date.now();
+
                 await message.delete().catch(() => {});
 
                 // EMBED PISTA
@@ -792,6 +803,9 @@ ${mensaje}`
             partida.votos[
                 message.author.id
             ] = mencionado.id;
+
+            partida.ultimaActividad =
+            Date.now();
 
             const embedVoto =
                 new EmbedBuilder()
@@ -1038,3 +1052,66 @@ async function preguntarImpostores(
         components: [botones]
     });
 }
+
+setInterval(async () => {
+
+    for (
+        const [guildID, partida]
+        of partidas
+    ) {
+
+        const ahora = Date.now();
+
+        const tiempoInactivo =
+            ahora - partida.ultimaActividad;
+
+        const guild =
+            client.guilds.cache.get(guildID);
+
+        if (!guild) continue;
+
+        const canal =
+            guild.channels.cache.get(
+                canalJuegoID
+            );
+
+        if (!canal) continue;
+
+        // ALERTA
+
+        if (
+            tiempoInactivo >=
+            10 * 60 * 1000 &&
+            !partida.alertaInactividad
+        ) {
+
+            partida.alertaInactividad = true;
+
+            canal.send(
+"⚠️ La sala será cerrada en 10 segundos por inactividad.\n\n👑 El host debe enviar un mensaje para mantenerla activa."
+            );
+
+            setTimeout(() => {
+
+                const partidaActual =
+                    partidas.get(guildID);
+
+                if (!partidaActual) return;
+
+                if (
+                    partidaActual.alertaInactividad
+                ) {
+
+                    partidas.delete(guildID);
+
+                    canal.send(
+                        "💀 Sala cerrada por inactividad."
+                    );
+                }
+
+            }, 10000);
+        }
+
+    }
+
+}, 60000);
