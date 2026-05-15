@@ -283,34 +283,40 @@ if (contenido === "!cancelar") {
             }
 
             if (
-                partida.jugadores.length < 3
-            ) 
-            
-            const embed = new EmbedBuilder()
-    .setColor("#004D98")
-    .setTitle("⚙️ CONFIGURACIÓN")
-    .setDescription(
-`🕵️ ¿Quieres que los impostores se conozcan entre sí?`
+    partida.jugadores.length < 3
+) {
+
+    return message.reply(
+        "⚠️ Necesitan mínimo 3 jugadores."
     );
+}
+
+const embed = new EmbedBuilder()
+.setColor("#004D98")
+.setTitle("⚙️ CONFIGURACIÓN")
+.setDescription(
+`🕵️ ¿Quieres que los impostores se conozcan entre sí?`
+);
 
 const botones = new ActionRowBuilder()
-    .addComponents(
+.addComponents(
 
-        new ButtonBuilder()
-            .setCustomId("team_si")
-            .setLabel("Sí")
-            .setStyle(ButtonStyle.Success),
+new ButtonBuilder()
+.setCustomId("team_si")
+.setLabel("Sí")
+.setStyle(ButtonStyle.Success),
 
-        new ButtonBuilder()
-            .setCustomId("team_no")
-            .setLabel("No")
-            .setStyle(ButtonStyle.Danger)
-    );
+new ButtonBuilder()
+.setCustomId("team_no")
+.setLabel("No")
+.setStyle(ButtonStyle.Danger)
+);
 
 return message.channel.send({
-    embeds: [embed],
-    components: [botones]
-});{
+embeds: [embed],
+components: [botones]
+});
+{
                 return message.reply(
                     "⚠️ Necesitan mínimo 3 jugadores."
                 );
