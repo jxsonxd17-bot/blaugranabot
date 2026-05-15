@@ -357,14 +357,15 @@ ${palabra}`
 
         if (
             partidaTurno &&
-            partidaTurno.iniciada &&
-            !partidaTurno.votacionIniciada
+            partidaTurno.iniciada
         ) {
 
             // BORRAR MENSAJES NORMALES
+            // SOLO DURANTE PISTAS
 
             if (
-                !contenido.startsWith("!")
+                !contenido.startsWith("!") &&
+                !partidaTurno.faseVotacion
             ) {
 
                 await message.delete().catch(() => {});
@@ -378,6 +379,12 @@ ${palabra}`
             if (
                 contenido.startsWith("!pista")
             ) {
+
+                if (
+                    partidaTurno.votacionIniciada
+                ) {
+                    return;
+                }
 
                 const jugadorActualID =
                     partidaTurno.ordenTurnos[
@@ -651,6 +658,11 @@ ${palabra}`
                         )
                     );
 
+                const textoImpostores =
+                    partida.impostores.length === 1
+                        ? "🕵️ EL IMPOSTOR ERA..."
+                        : "🕵️ LOS IMPOSTORES ERAN...";
+
                 if (
                     partida.impostores.includes(
                         masVotado
@@ -659,7 +671,7 @@ ${palabra}`
 
                     message.channel.send(
 `━━━━━━━━━━━━━━
-🕵️ LOS IMPOSTORES ERAN...
+${textoImpostores}
 ${impostoresTexto.join(", ")}
 ━━━━━━━━━━━━━━
 
@@ -673,7 +685,7 @@ ${partida.palabra}
 
                     message.channel.send(
 `━━━━━━━━━━━━━━
-🕵️ LOS IMPOSTORES ERAN...
+${textoImpostores}
 ${impostoresTexto.join(", ")}
 ━━━━━━━━━━━━━━
 
