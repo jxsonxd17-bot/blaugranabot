@@ -10,7 +10,7 @@ module.exports = (client) => {
         // COMANDO
         if (message.content.startsWith('!anuncio')) {
 
-            const anuncio = message.content.slice(10).trim();
+            const anuncio = message.content.slice(9).trim();
 
             if (!anuncio) {
                 return message.reply('❌ Escribe un anuncio.');
