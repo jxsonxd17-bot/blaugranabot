@@ -471,7 +471,7 @@ ${palabra}`
                     ? "🕵️ Hay 1 impostor"
                     : `🕵️ Hay ${cantidadImpostores} impostores`;
 
-            const embed = new EmbedBuilder()
+            const embedConfig = new EmbedBuilder()
                 .setColor("#004D98")
                 .setTitle("🔥 LA PARTIDA COMENZÓ")
                 .setDescription(
@@ -488,7 +488,7 @@ ${palabra}`
                 });
 
             return message.channel.send({
-                embeds: [embed]
+                embeds: [embedConfig]
             });
         }
 
