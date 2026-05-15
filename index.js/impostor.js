@@ -1,5 +1,8 @@
 const {
-    EmbedBuilder
+    EmbedBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle
 } = require("discord.js");
 
 const palabras = require("./data/futbolistas");
@@ -50,22 +53,37 @@ module.exports = (client) => {
                 pistas: {},
                 faseVotacion: false,
                 votacionIniciada: false,
-                impostores: []
+                impostores: [],
+                modoEquipo: false,
+                configurando: true,
+                maxImpostores: 1
             });
 
             const embed = new EmbedBuilder()
-                .setColor("#004D98")
-                .setTitle("⚽ PARTIDA CREADA")
-                .setDescription(
-                    `👑 Host: ${message.author}`
-                )
-                .setFooter({
-                    text: "Impostor Futbolero"
-                });
+            .setColor("#004D98")
+            .setTitle("⚙️ CONFIGURACIÓN")
+            .setDescription(
+            `🕵️ ¿Quieres que los impostores se conozcan entre sí?`
+            );
 
-            return message.channel.send({
-                embeds: [embed]
-            });
+const botones = new ActionRowBuilder()
+    .addComponents(
+
+        new ButtonBuilder()
+            .setCustomId("team_si")
+            .setLabel("Sí")
+            .setStyle(ButtonStyle.Success),
+
+        new ButtonBuilder()
+            .setCustomId("team_no")
+            .setLabel("No")
+            .setStyle(ButtonStyle.Danger)
+    );
+
+return message.channel.send({
+    embeds: [embed],
+    components: [botones]
+});
         }
 
         // =======================
@@ -78,14 +96,14 @@ module.exports = (client) => {
                 .setColor("#004D98")
                 .setTitle("📌 COMANDOS")
                 .setDescription(
-`⚽ !crear
-⚽ !unirse
-⚽ !iniciar
-⚽ !salir
-⚽ !cancelar
-⚽ !pista (tu pista)
-⚽ !votacion
-⚽ !votar @usuario`
+`!crear
+!unirse
+!iniciar
+!salir
+!cancelar
+!pista (tu pista)
+!votacion
+!votar @usuario`
                 );
 
             return message.channel.send({
@@ -144,89 +162,6 @@ ${partida.jugadores.length}`
         }
 
         // =======================
-        // SALIR
-        // =======================
-
-        if (contenido === "!salir") {
-
-            const partida =
-                partidas.get(message.guild.id);
-
-            if (!partida) {
-                return message.reply(
-                    "❌ No hay partida."
-                );
-            }
-
-            partida.jugadores =
-                partida.jugadores.filter(
-                    id => id !== message.author.id
-                );
-
-            const embed =
-                new EmbedBuilder()
-                .setColor("#D72638")
-                .setTitle("🚪 JUGADOR SALIÓ")
-                .setDescription(
-                    `${message.author} salió de la partida.`
-                );
-
-            message.channel.send({
-                embeds: [embed]
-            });
-
-            if (partida.jugadores.length === 0) {
-
-                partidas.delete(message.guild.id);
-
-                return message.channel.send(
-                    "💀 La partida fue eliminada."
-                );
-            }
-
-            return;
-        }
-
-        // =======================
-        // CANCELAR
-        // =======================
-
-        if (contenido === "!cancelar") {
-
-            const partida =
-                partidas.get(message.guild.id);
-
-            if (!partida) {
-                return message.reply(
-                    "❌ No hay partida."
-                );
-            }
-
-            if (
-                message.author.id !==
-                partida.host
-            ) {
-                return message.reply(
-                    "❌ Solo el host puede cancelar."
-                );
-            }
-
-            partidas.delete(message.guild.id);
-
-            const embed =
-                new EmbedBuilder()
-                .setColor("#D72638")
-                .setTitle("🛑 PARTIDA CANCELADA")
-                .setDescription(
-                    `👑 ${message.author} canceló la partida.`
-                );
-
-            return message.channel.send({
-                embeds: [embed]
-            });
-        }
-
-        // =======================
         // INICIAR
         // =======================
 
@@ -269,20 +204,8 @@ ${partida.jugadores.length}`
             // CANTIDAD IMPOSTORES
             // =======================
 
-            let cantidadImpostores = 1;
-
-            if (partida.jugadores.length >= 9) {
-
-                cantidadImpostores = 4;
-
-            } else if (partida.jugadores.length >= 7) {
-
-                cantidadImpostores = 3;
-
-            } else if (partida.jugadores.length >= 5) {
-
-                cantidadImpostores = 2;
-            }
+            let cantidadImpostores =
+            partida.maxImpostores;
 
             // =======================
             // ELEGIR IMPOSTORES
@@ -346,11 +269,50 @@ ${partida.jugadores.length}`
                         )
                     ) {
 
-                        await jugador.send(
+                        if (partida.modoEquipo) {
+
+    const otrosImpostores =
+        partida.impostores
+        .filter(id => id !== jugadorID);
+
+    let listaImpostores = "";
+
+    if (otrosImpostores.length > 0) {
+
+        const nombres =
+            await Promise.all(
+                otrosImpostores.map(
+                    async (id) => {
+
+                        const user =
+                            await client.users.fetch(id);
+
+                        return user.username;
+                    }
+                )
+            );
+
+        listaImpostores =
+`\n\n🕵️ Impostores contigo:\n\n${nombres.map(n => `• ${n}`).join("\n")}`;
+    }
+
+    await jugador.send(
+`🕵️ ERES IMPOSTOR
+
+Descubre la palabra sin que te descubran.${listaImpostores}
+
+💬 Usa:
+!imp mensaje`
+    );
+
+} else {
+
+    await jugador.send(
 `🕵️ ERES IMPOSTOR
 
 Descubre la palabra sin que te descubran.`
-                        );
+    );
+}
 
                     } else {
 
@@ -399,6 +361,75 @@ ${palabra}`
                 embeds: [embed]
             });
         }
+
+// =======================
+// CHAT IMPOSTORES
+// =======================
+
+if (contenido.startsWith("!imp")) {
+
+    const partida =
+        partidas.get(message.guild.id);
+
+    if (!partida) return;
+
+    if (!partida.modoEquipo) {
+        return message.reply(
+            "❌ El chat secreto está desactivado."
+        );
+    }
+
+    if (
+        !partida.impostores.includes(
+            message.author.id
+        )
+    ) {
+        return;
+    }
+
+    const mensaje =
+        message.content
+        .slice(5)
+        .trim();
+
+    if (!mensaje) {
+        return message.reply(
+            "⚠️ Escribe un mensaje."
+        );
+    }
+
+    for (
+        const impostorID
+        of partida.impostores
+    ) {
+
+        if (
+            impostorID ===
+            message.author.id
+        ) continue;
+
+        try {
+
+            const usuario =
+                await client.users.fetch(
+                    impostorID
+                );
+
+            await usuario.send(
+`🕵️ CHAT SECRETO
+
+${message.author.username}:
+
+${mensaje}`
+            );
+
+        } catch {}
+    }
+
+    await message.react("🕵️");
+
+    return;
+}
 
         // =======================
         // TURNOS
@@ -733,4 +764,147 @@ ${palabra}`
 
     });
 
+// =======================
+// BOTONES
+// =======================
+
+client.on("interactionCreate", async (interaction) => {
+
+    if (!interaction.isButton()) return;
+
+    const partida =
+        partidas.get(interaction.guild.id);
+
+    if (!partida) return;
+
+    // =======================
+    // MODO EQUIPO
+    // =======================
+
+    if (
+        interaction.customId === "team_si"
+    ) {
+
+        partida.modoEquipo = true;
+
+        const embed =
+            new EmbedBuilder()
+            .setColor("#00A86B")
+            .setTitle("🕵️ MODO EQUIPO")
+            .setDescription(
+`✅ Los impostores se conocerán.`
+            );
+
+        await interaction.update({
+            embeds: [embed],
+            components: []
+        });
+
+        return preguntarImpostores(interaction);
+    }
+
+    if (
+        interaction.customId === "team_no"
+    ) {
+
+        partida.modoEquipo = false;
+
+        const embed =
+            new EmbedBuilder()
+            .setColor("#D72638")
+            .setTitle("🕵️ MODO NORMAL")
+            .setDescription(
+`❌ Los impostores NO se conocerán.`
+            );
+
+        await interaction.update({
+            embeds: [embed],
+            components: []
+        });
+
+        return preguntarImpostores(interaction);
+    }
+
+    // =======================
+    // IMPOSTORES
+    // =======================
+
+    if (
+        interaction.customId.startsWith("imp_")
+    ) {
+
+        const cantidad =
+            parseInt(
+                interaction.customId
+                .split("_")[1]
+            );
+
+        partida.maxImpostores =
+            cantidad;
+
+        partida.configurando = false;
+
+        const embed =
+            new EmbedBuilder()
+            .setColor("#004D98")
+            .setTitle("✅ CONFIGURACIÓN TERMINADA")
+            .setDescription(
+`🕵️ Impostores:
+${cantidad}
+
+⚽ Ya pueden usar:
+
+!unirse`
+            );
+
+        return interaction.update({
+            embeds: [embed],
+            components: []
+        });
+    }
+});
+
 };
+
+async function preguntarImpostores(
+    interaction
+) {
+
+    const botones =
+        new ActionRowBuilder()
+        .addComponents(
+
+            new ButtonBuilder()
+                .setCustomId("imp_1")
+                .setLabel("1")
+                .setStyle(ButtonStyle.Primary),
+
+            new ButtonBuilder()
+                .setCustomId("imp_2")
+                .setLabel("2")
+                .setStyle(ButtonStyle.Primary),
+
+            new ButtonBuilder()
+                .setCustomId("imp_3")
+                .setLabel("3")
+                .setStyle(ButtonStyle.Primary),
+
+            new ButtonBuilder()
+                .setCustomId("imp_4")
+                .setLabel("4")
+                .setStyle(ButtonStyle.Danger)
+        );
+
+    const embed =
+        new EmbedBuilder()
+        .setColor("#D72638")
+        .setTitle("🕵️ IMPOSTORES")
+        .setDescription(
+`¿Cuántos impostores quieres?`
+        );
+
+    return interaction.followUp({
+        embeds: [embed],
+        components: [botones]
+    });
+}
