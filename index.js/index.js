@@ -1,32 +1,60 @@
-require('dotenv').config();
+module.exports = (client) => {
 
-const {
-    Client,
-    GatewayIntentBits,
-    Events
-} = require('discord.js');
+    client.on('messageCreate', async message => {
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent
-    ]
-});
+        if (message.author.bot) return;
 
-require('./bienvenida')(client);
-require('./partido')(client);
-require('./tabla')(client);
-require('./rata')(client);
-require('./live')(client);
-require('./anuncio')(client);
-require('./impostor')(client);
-require('./femenilive')(client);
+        // SOLO ADMINS
+        if (!message.member.permissions.has('Administrator')) return;
 
-client.once(Events.ClientReady, readyClient => {
+        // COMANDO
+        if (message.content.startsWith('!anuncio')) {
 
-    console.log(`✅ Bot conectado como ${readyClient.user.tag}`);
-});
+            const anuncio =
+                message.content.slice(9).trim();
 
-client.login(process.env.TOKEN);
+            const imagen =
+                [...message.attachments.values()][0];
+
+            if (!anuncio && !imagen) {
+
+                return message.reply(
+                    '❌ Escribe un anuncio o adjunta una imagen.'
+                );
+            }
+
+            // ID DEL CANAL DE ANUNCIOS
+            const canal =
+                client.channels.cache.get(
+                    '1493418712416518305'
+                );
+
+            if (!canal) {
+
+                return message.reply(
+                    '❌ Canal no encontrado.'
+                );
+            }
+
+            await canal.send({
+
+content:
+`@everyone
+
+📢 **NUEVO ANUNCIO** 📢
+
+${anuncio || ""}
+
+@LaCasaBlaugrana💙❤️`,
+
+files:
+imagen ? [imagen.url] : []
+
+            });
+
+            return message.reply(
+                '✅ Anuncio enviado.'
+            );
+        }
+    });
+};

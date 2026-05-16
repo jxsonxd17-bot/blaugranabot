@@ -98,23 +98,8 @@ if (partida) {
 !unirse`
     );
 
-const botones = new ActionRowBuilder()
-    .addComponents(
-
-        new ButtonBuilder()
-            .setCustomId("team_si")
-            .setLabel("Sí")
-            .setStyle(ButtonStyle.Success),
-
-        new ButtonBuilder()
-            .setCustomId("team_no")
-            .setLabel("No")
-            .setStyle(ButtonStyle.Danger)
-    );
-
-return message.channel.send({
-    embeds: [embed],
-    components: [botones]
+    return message.channel.send({
+    embeds: [embed]
 });
         }
 
@@ -326,174 +311,25 @@ const embed = new EmbedBuilder()
 `🕵️ ¿Quieres que los impostores se conozcan entre sí?`
 );
 
-            const palabra =
-                palabras[
-                    Math.floor(
-                        Math.random() *
-                        palabras.length
-                    )
-                ];
+const botones = new ActionRowBuilder()
+    .addComponents(
 
-            // =======================
-            // CANTIDAD IMPOSTORES
-            // =======================
+        new ButtonBuilder()
+            .setCustomId("team_si")
+            .setLabel("Sí")
+            .setStyle(ButtonStyle.Success),
 
-            let cantidadImpostores =
-            partida.maxImpostores;
-
-            // =======================
-            // ELEGIR IMPOSTORES
-            // =======================
-
-            const impostores = [];
-
-            const jugadoresDisponibles =
-                [...partida.jugadores];
-
-            for (
-                let i = 0;
-                i < cantidadImpostores;
-                i++
-            ) {
-
-                const randomIndex =
-                    Math.floor(
-                        Math.random() *
-                        jugadoresDisponibles.length
-                    );
-
-                impostores.push(
-                    jugadoresDisponibles[randomIndex]
-                );
-
-                jugadoresDisponibles.splice(
-                    randomIndex,
-                    1
-                );
-            }
-
-            partida.iniciada = true;
-            partida.palabra = palabra;
-            partida.impostores = impostores;
-
-            partida.ordenTurnos =
-                [...partida.jugadores]
-                .sort(() =>
-                    Math.random() - 0.5
-                );
-
-            partida.turnoActual = 0;
-
-            // =======================
-            // DMS
-            // =======================
-
-            for (const jugadorID of partida.jugadores) {
-
-                const jugador =
-                    await client.users.fetch(
-                        jugadorID
-                    );
-
-                try {
-
-                    if (
-                        partida.impostores.includes(
-                            jugadorID
-                        )
-                    ) {
-
-                        if (partida.modoEquipo) {
-
-    const otrosImpostores =
-        partida.impostores
-        .filter(id => id !== jugadorID);
-
-    let listaImpostores = "";
-
-    if (otrosImpostores.length > 0) {
-
-        const nombres =
-            await Promise.all(
-                otrosImpostores.map(
-                    async (id) => {
-
-                        const user =
-                            await client.users.fetch(id);
-
-                        return user.username;
-                    }
-                )
-            );
-
-        listaImpostores =
-`\n\n🕵️ Impostores contigo:\n\n${nombres.map(n => `• ${n}`).join("\n")}`;
-    }
-
-    await jugador.send(
-`🕵️ ERES IMPOSTOR
-
-Descubre la palabra sin que te descubran.${listaImpostores}
-
-💬 Usa:
-!imp mensaje`
+        new ButtonBuilder()
+            .setCustomId("team_no")
+            .setLabel("No")
+            .setStyle(ButtonStyle.Danger)
     );
 
-} else {
+return message.channel.send({
+    embeds: [embed],
+    components: [botones]
+});
 
-    await jugador.send(
-`🕵️ ERES IMPOSTOR
-
-Descubre la palabra sin que te descubran.`
-    );
-}
-
-                    } else {
-
-                        await jugador.send(
-`⚽ TU PALABRA ES:
-
-${palabra}`
-                        );
-                    }
-
-                } catch {
-
-                    message.channel.send(
-`❌ ${jugador.username} tiene los MD cerrados.`
-                    );
-                }
-            }
-
-            const primerJugador =
-                await client.users.fetch(
-                    partida.ordenTurnos[0]
-                );
-
-            const textoImpostor =
-                cantidadImpostores === 1
-                    ? "🕵️ Hay 1 impostor"
-                    : `🕵️ Hay ${cantidadImpostores} impostores`;
-
-            const embedConfig = new EmbedBuilder()
-                .setColor("#004D98")
-                .setTitle("🔥 LA PARTIDA COMENZÓ")
-                .setDescription(
-`${textoImpostor}
-
-🎤 Primer turno:
-👉 ${primerJugador}
-
-📌 Usa:
-!pista (tu pista)`
-                )
-                .setFooter({
-                    text: "Impostor Futbolero"
-                });
-
-            return message.channel.send({
-                embeds: [embedConfig]
-            });
         }
 
 // =======================
@@ -984,23 +820,174 @@ client.on("interactionCreate", async (interaction) => {
 
         partida.configurando = false;
 
-        const embed =
-            new EmbedBuilder()
-            .setColor("#004D98")
-            .setTitle("✅ CONFIGURACIÓN TERMINADA")
-            .setDescription(
-`🕵️ Impostores:
-${cantidad}
+        const palabra =
+                palabras[
+                    Math.floor(
+                        Math.random() *
+                        palabras.length
+                    )
+                ];
 
-⚽ Ya pueden usar:
+            // =======================
+            // CANTIDAD IMPOSTORES
+            // =======================
 
-!unirse`
+            let cantidadImpostores =
+            partida.maxImpostores;
+
+            // =======================
+            // ELEGIR IMPOSTORES
+            // =======================
+
+            const impostores = [];
+
+            const jugadoresDisponibles =
+                [...partida.jugadores];
+
+            for (
+                let i = 0;
+                i < cantidadImpostores;
+                i++
+            ) {
+
+                const randomIndex =
+                    Math.floor(
+                        Math.random() *
+                        jugadoresDisponibles.length
+                    );
+
+                impostores.push(
+                    jugadoresDisponibles[randomIndex]
+                );
+
+                jugadoresDisponibles.splice(
+                    randomIndex,
+                    1
+                );
+            }
+
+            partida.iniciada = true;
+            partida.palabra = palabra;
+            partida.impostores = impostores;
+
+            partida.ordenTurnos =
+                [...partida.jugadores]
+                .sort(() =>
+                    Math.random() - 0.5
+                );
+
+            partida.turnoActual = 0;
+
+            // =======================
+            // DMS
+            // =======================
+
+            for (const jugadorID of partida.jugadores) {
+
+                const jugador =
+                    await client.users.fetch(
+                        jugadorID
+                    );
+
+                try {
+
+                    if (
+                        partida.impostores.includes(
+                            jugadorID
+                        )
+                    ) {
+
+                        if (partida.modoEquipo) {
+
+    const otrosImpostores =
+        partida.impostores
+        .filter(id => id !== jugadorID);
+
+    let listaImpostores = "";
+
+    if (otrosImpostores.length > 0) {
+
+        const nombres =
+            await Promise.all(
+                otrosImpostores.map(
+                    async (id) => {
+
+                        const user =
+                            await client.users.fetch(id);
+
+                        return user.username;
+                    }
+                )
             );
 
-        return interaction.update({
-            embeds: [embed],
-            components: []
-        });
+        listaImpostores =
+`\n\n🕵️ Impostores contigo:\n\n${nombres.map(n => `• ${n}`).join("\n")}`;
+    }
+
+    await jugador.send(
+`🕵️ ERES IMPOSTOR
+
+Descubre la palabra sin que te descubran.${listaImpostores}
+
+💬 Usa:
+!imp mensaje`
+    );
+
+} else {
+
+    await jugador.send(
+`🕵️ ERES IMPOSTOR
+
+Descubre la palabra sin que te descubran.`
+    );
+}
+
+                    } else {
+
+                        await jugador.send(
+`⚽ TU PALABRA ES:
+
+${palabra}`
+                        );
+                    }
+
+                } catch {
+
+                    message.channel.send(
+`❌ ${jugador.username} tiene los MD cerrados.`
+                    );
+                }
+            }
+
+            const primerJugador =
+                await client.users.fetch(
+                    partida.ordenTurnos[0]
+                );
+
+            const textoImpostor =
+                cantidadImpostores === 1
+                    ? "🕵️ Hay 1 impostor"
+                    : `🕵️ Hay ${cantidadImpostores} impostores`;
+
+            const embedConfig = new EmbedBuilder()
+                .setColor("#004D98")
+                .setTitle("🔥 LA PARTIDA COMENZÓ")
+                .setDescription(
+`${textoImpostor}
+
+🎤 Primer turno:
+👉 ${primerJugador}
+
+📌 Usa:
+!pista (tu pista)`
+                )
+                .setFooter({
+                    text: "Impostor Futbolero"
+                });
+
+            return message.channel.send({
+                embeds: [embedConfig]
+            });
     }
 });
 
@@ -1047,6 +1034,7 @@ async function preguntarImpostores(
         embeds: [embed],
         components: [botones]
     });
+}
 
 setInterval(async () => {
 
@@ -1110,5 +1098,3 @@ setInterval(async () => {
     }
 
 }, 60000);
-
-}
