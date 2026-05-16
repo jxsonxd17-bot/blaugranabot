@@ -98,10 +98,6 @@ if (partida) {
 !unirse`
     );
 
-return message.channel.send({
-    embeds: [embed]
-});
-
 const botones = new ActionRowBuilder()
     .addComponents(
 
@@ -1051,7 +1047,6 @@ async function preguntarImpostores(
         embeds: [embed],
         components: [botones]
     });
-}
 
 setInterval(async () => {
 
@@ -1115,3 +1110,5 @@ setInterval(async () => {
     }
 
 }, 60000);
+
+}
