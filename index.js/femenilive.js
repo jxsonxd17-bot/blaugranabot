@@ -52,13 +52,16 @@ module.exports = (client) => {
             const resultado =
                 args[2];
 
+            const comentario =
+                args.slice(3).join(" ");
+
             if (
                 !minuto ||
                 !resultado
             ) {
 
                 return message.reply(
-                    "⚠️ Usa: !livef 15 1-0"
+                    "⚠️ Usa: !livef 15 1-0 Inició el partido"
                 );
             }
 
@@ -80,15 +83,58 @@ content:
 
 🏆 | Copa de La Reina 👑
 
-📌 | Final.
+📆 | Final.
 
-🏟️ | Estadio de Gran Canaria.
+🏟️ | Estadio de Gran Canaria, Las Palmas, España.
 
 ⌚ ${minutoActual}'
 
 🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Atlético de Madrid 🔴
 
 ${eventos.join("\n")}
+
+${comentario ? `🔥 ${comentario}\n` : ""}
+@LaCasaBlaugrana💙❤️`,
+
+files:
+imagen ? [imagen.url] : []
+
+            });
+        }
+
+        // =======================
+        // COMENTARIO
+        // =======================
+
+        if (
+            contenido.startsWith("!comentario")
+        ) {
+
+            const args =
+                contenido.split(" ");
+
+            const minuto =
+                args[1];
+
+            const comentario =
+                args.slice(2).join(" ");
+
+            if (
+                !minuto ||
+                !comentario
+            ) {
+
+                return message.reply(
+"⚠️ Usa: !comentario 23 Qué golazo"
+                );
+            }
+
+            return message.channel.send({
+
+content:
+`⌚ ${minuto}'
+
+🎙️ ${comentario}
 
 @LaCasaBlaugrana💙❤️`,
 
@@ -291,9 +337,9 @@ content:
 
 🏆 | Copa de La Reina 👑
 
-📌 | Final.
+📆 | Final.
 
-🏟️ | Estadio de Gran Canaria.
+🏟️ | "Estadio de Gran Canaria, Las Palmas, España".
 
 ⌚ HT'
 
@@ -301,7 +347,7 @@ content:
 
 ${eventos.join("\n")}
 
-🔥 ${comentario}
+${comentario}
 
 @LaCasaBlaugrana💙❤️`,
 
@@ -332,9 +378,9 @@ content:
 
 🏆 | Copa de La Reina 👑
 
-📌 | Final.
+📆 | Final.
 
-🏟️ | Estadio de Gran Canaria.
+🏟️ | "Estadio de Gran Canaria, Las Palmas, España".
 
 🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Atlético de Madrid 🔴
 
