@@ -123,9 +123,9 @@ if (partida) {
 !votar @usuario`
                 );
 
-            return message.channel.send({
-                embeds: [embed]
-            });
+            return interaction.channel.send({
+    embeds: [embedConfig]
+});
         }
 
         // =======================
@@ -953,9 +953,9 @@ ${palabra}`
 
                 } catch {
 
-                    message.channel.send(
+                    interaction.channel.send(
 `❌ ${jugador.username} tiene los MD cerrados.`
-                    );
+);
                 }
             }
 
