@@ -149,7 +149,7 @@ imagen ? [imagen.url] : []
 // =======================
 
 if (
-    contenido === "!xi"
+    contenido.startsWith("!xi")
 ) {
 
     return message.channel.send({
