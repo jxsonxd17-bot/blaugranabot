@@ -33,7 +33,7 @@ module.exports = (client) => {
             message.content;
 
         const imagen =
-            message.attachments.first();
+    [...message.attachments.values()][0];
 
         // =======================
         // LIVE
