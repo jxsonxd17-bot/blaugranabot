@@ -75,7 +75,7 @@ if (marcadorActual !== ultimoMarcador && ultimoMarcador !== '') {
     } else {
 
         canal.send(
-            `⚽ Gol del rival.\n\n` +
+            `⚽ Gol del Betis.\n\n` +
             `⌚️ ${minuto}'\n\n` +
             `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
             `@LaCasaBlaugrana💙❤️`

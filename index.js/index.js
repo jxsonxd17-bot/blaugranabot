@@ -22,6 +22,7 @@ require('./rata')(client);
 require('./live')(client);
 require('./anuncio')(client);
 require('./impostor')(client);
+require('./femenilive')(client);
 
 client.once(Events.ClientReady, readyClient => {
 
