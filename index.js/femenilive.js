@@ -25,9 +25,10 @@ module.exports = (client) => {
         if (message.author.bot) return;
         if (!message.guild) return;
 
-        if (
-            message.channel.id !== canalFemeniID
-        ) return;
+        // if (
+//     message.channel.id !== canalFemeniID
+// )
+// return;
 
         const contenido =
             message.content;
