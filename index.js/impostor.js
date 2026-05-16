@@ -123,8 +123,8 @@ if (partida) {
 !votar @usuario`
                 );
 
-            return interaction.channel.send({
-    embeds: [embedConfig]
+            return message.channel.send({
+    embeds: [embed]
 });
         }
 
@@ -587,9 +587,9 @@ ${mensaje}`
 !votar @usuario`
                 );
 
-            return message.channel.send({
-                embeds: [embed]
-            });
+            return interaction.channel.send({
+    embeds: [embedConfig]
+});
         }
 
         // =======================
