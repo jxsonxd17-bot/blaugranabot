@@ -97,7 +97,7 @@ ${comentario ? `🔥 ${comentario}\n` : ""}
 @LaCasaBlaugrana💙❤️`,
 
 files:
-imagen ? [imagen.url] : []
+imagen ? [imagen.url] : undefined
 
             });
         }
@@ -139,7 +139,7 @@ content:
 @LaCasaBlaugrana💙❤️`,
 
 files:
-imagen ? [imagen.url] : []
+imagen ? [imagen.url] : undefined
 
             });
         }
@@ -179,7 +179,7 @@ content:
 @LaCasaBlaugrana💙❤️`,
 
 files:
-imagen ? [imagen.url] : []
+imagen ? [imagen.url] : undefined
 
     });
 }
@@ -241,7 +241,7 @@ ${eventos.join("\n")}
 @LaCasaBlaugrana💙❤️`,
 
 files:
-imagen ? [imagen.url] : []
+imagen ? [imagen.url] : undefined
 
             });
         }
@@ -293,7 +293,7 @@ ${eventos.join("\n")}
 @LaCasaBlaugrana💙❤️`,
 
 files:
-imagen ? [imagen.url] : []
+imagen ? [imagen.url] : undefined
 
             });
         }
@@ -351,7 +351,7 @@ ${resultado}
 @LaCasaBlaugrana💙❤️`,
 
 files:
-imagen ? [imagen.url] : []
+imagen ? [imagen.url] : undefined
 
             });
         }
@@ -392,7 +392,7 @@ ${comentario}
 @LaCasaBlaugrana💙❤️`,
 
 files:
-imagen ? [imagen.url] : []
+imagen ? [imagen.url] : undefined
 
             });
         }
@@ -431,7 +431,7 @@ ${comentario}
 @LaCasaBlaugrana💙❤️`,
 
 files:
-imagen ? [imagen.url] : []
+imagen ? [imagen.url] : undefined
 
             });
         }
