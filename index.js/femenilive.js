@@ -36,6 +36,9 @@ module.exports = (client) => {
         const imagen =
     [...message.attachments.values()][0];
 
+    const canal =
+    client.channels.cache.get(canalFemeniID);
+
         // =======================
         // LIVE
         // =======================
@@ -77,7 +80,7 @@ module.exports = (client) => {
 
             minutoActual = minuto;
 
-            return message.channel.send({
+            return canal.send({
 
 content:
 `‼️ En Vivo ‼️
@@ -130,7 +133,7 @@ imagen ? [imagen.url] : undefined
                 );
             }
 
-            return message.channel.send({
+            return canal.send({
 
 content:
 `⌚ ${minuto}'
@@ -153,11 +156,35 @@ if (
     contenido.startsWith("!xi")
 ) {
 
-    console.log(imagen);
+    return canal.send({
 
-    return message.channel.send({
-        content: "TEST",
-        files: imagen ? [imagen.url] : []
+content:
+`🏆 | Copa de La Reina 🇪🇸.
+
+📆 | Final.
+
+🗒️ | XI Inicial - FC Barcelona 🔵 (4-3-3)
+
+🧤 | Cata Coll.
+
+🚀 | Ona Battle.
+🛡️ | Aïcha Cámara.
+🛡️ | Mapi León.
+🚀 | Esme Brugts.
+
+🧠 | Alexia Putellas (©️).
+🧠 | Patri Guijarro.
+🧠 | Claudia Pina.
+
+⚡ | Vicky López.
+⚡ | Ewa Pajor.
+⚡ | Salma Paralluelo.
+
+@LaCasaBlaugrana💙❤️`,
+
+files:
+imagen ? [imagen.url] : []
+
     });
 }
 
@@ -204,7 +231,7 @@ if (
                 );
             }
 
-            return message.channel.send({
+            return canal.send({
 
 content:
 `🚨 GOOOOOOOOOL DEL BARÇA FEMENÍ 🚨
@@ -256,7 +283,7 @@ imagen ? [imagen.url] : undefined
 `⚽ ${goleadora} ${minuto}' 🔴`
             );
 
-            return message.channel.send({
+            return canal.send({
 
 content:
 `⚽ Gol del Atlético de Madrid.
@@ -316,7 +343,7 @@ imagen ? [imagen.url] : undefined
 resultado.trim()
             );
 
-            return message.channel.send({
+            return canal.send({
 
 content:
 `🔄 Cambios 🔄
@@ -347,7 +374,7 @@ imagen ? [imagen.url] : undefined
                     ""
                 );
 
-            return message.channel.send({
+            return canal.send({
 
 content:
 `⏱️ Medio Tiempo ⏱️
@@ -388,7 +415,7 @@ imagen ? [imagen.url] : undefined
                     ""
                 );
 
-            return message.channel.send({
+            return canal.send({
 
 content:
 `✅ Finalizado ✅
