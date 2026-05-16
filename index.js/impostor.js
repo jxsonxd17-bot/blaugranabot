@@ -985,9 +985,9 @@ ${palabra}`
                     text: "Impostor Futbolero"
                 });
 
-            return message.channel.send({
+            return interaction.channel.send({
     embeds: [embedConfig]
-            });
+});
     }
 });
 
