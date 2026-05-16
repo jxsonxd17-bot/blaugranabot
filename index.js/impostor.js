@@ -1034,9 +1034,10 @@ async function preguntarImpostores(
         embeds: [embed],
         components: [botones]
     });
-}
 
-setInterval(async () => {
+    }
+
+    setInterval(async () => {
 
     for (
         const [guildID, partida]
