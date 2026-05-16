@@ -587,8 +587,8 @@ ${mensaje}`
 !votar @usuario`
                 );
 
-            return interaction.channel.send({
-    embeds: [embedConfig]
+            return message.channel.send({
+    embeds: [embed]
 });
         }
 
@@ -986,7 +986,7 @@ ${palabra}`
                 });
 
             return message.channel.send({
-                embeds: [embedConfig]
+    embeds: [embedConfig]
             });
     }
 });
