@@ -152,35 +152,11 @@ if (
     contenido.startsWith("!xi")
 ) {
 
+    console.log(imagen);
+
     return message.channel.send({
-
-content:
-`🏆 | Copa de La Reina 🇪🇸.
-
-📆 | Final.
-
-🗒️ | XI Inicial - FC Barcelona 🔵 (4-3-3)
-
-🧤 | Cata Coll.
-
-🚀 | Ona Battle.
-🛡️ | Aïcha Cámara.
-🛡️ | Mapi León.
-🚀 | Esme Brugts.
-
-🧠 | Alexia Putellas (©️).
-🧠 | Patri Guijarro.
-🧠 | Claudia Pina.
-
-⚡ | Vicky López.
-⚡ | Ewa Pajor.
-⚡ | Salma Paralluelo.
-
-@LaCasaBlaugrana💙❤️`,
-
-files:
-imagen ? [imagen.url] : undefined
-
+        content: "TEST",
+        files: imagen ? [imagen.url] : []
     });
 }
 
