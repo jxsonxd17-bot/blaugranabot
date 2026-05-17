@@ -58,6 +58,7 @@ require("./live")(client);
 require("./partido")(client);
 require("./rata")(client);
 require("./tabla")(client);
+require("./XI")(client);
 
 // =======================
 // LOGIN
