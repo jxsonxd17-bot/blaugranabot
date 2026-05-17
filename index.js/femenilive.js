@@ -2,7 +2,7 @@
 // COBERTURA FEMENÍ
 // =======================
 
-const canalFemeniID = "1505237014033993739";
+const canalFemeniID = "1504132193532772542";
 
 // =======================
 // VARIABLES
@@ -85,15 +85,15 @@ module.exports = (client) => {
 content:
 `‼️ En Vivo ‼️
 
-🏆 | Copa de La Reina 👑
+🏆 | LaLiga EA Sports 🇪🇸
 
-📆 | Final.
+📆 | Jornada 37.
 
-🏟️ | Estadio de Gran Canaria, Las Palmas, España.
+🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España".
 
 ⌚ ${minutoActual}'
 
-🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Atlético de Madrid 🔴
+🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Real Betis 🟢
 
 ${eventos.join("\n")}
 
@@ -148,45 +148,6 @@ imagen ? [imagen.url] : undefined
             });
         }
 
-// =======================
-// XI INICIAL
-// =======================
-
-if (
-    contenido.startsWith("!xi")
-) {
-
-    return canal.send({
-
-content:
-`🏆 | Copa de La Reina 🇪🇸.
-
-📆 | Final.
-
-🗒️ | XI Inicial - FC Barcelona 🔵 (4-3-3)
-
-🧤 | Cata Coll.
-
-🚀 | Ona Battle.
-🛡️ | Aïcha Cámara.
-🛡️ | Mapi León.
-🚀 | Esme Brugts.
-
-🧠 | Alexia Putellas (©️).
-🧠 | Patri Guijarro.
-🧠 | Claudia Pina.
-
-⚡ | Vicky López.
-⚡ | Ewa Pajor.
-⚡ | Salma Paralluelo.
-
-@LaCasaBlaugrana💙❤️`,
-
-files:
-imagen ? [imagen.url] : []
-
-    });
-}
 
         // =======================
         // GOL BARÇA
@@ -234,11 +195,11 @@ imagen ? [imagen.url] : []
             return canal.send({
 
 content:
-`🚨 GOOOOOOOOOL DEL BARÇA FEMENÍ 🚨
+`🚨 GOOOOOOOOOL DEL BARÇA 🚨
 
 ⌚ ${minuto}'
 
-🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Atlético de Madrid 🔴
+🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Real Betis 🟢
 
 ${eventos.join("\n")}
 
@@ -290,7 +251,7 @@ content:
 
 ⌚ ${minuto}'
 
-🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Atlético de Madrid 🔴
+🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Real Betis 🟢
 
 ${eventos.join("\n")}
 
@@ -379,15 +340,15 @@ imagen ? [imagen.url] : undefined
 content:
 `⏱️ Medio Tiempo ⏱️
 
-🏆 | Copa de La Reina 👑
+🏆 | LaLiga EA Sports 🇪🇸
 
-📆 | Final.
+📆 | Jornada 37.
 
-🏟️ | "Estadio de Gran Canaria, Las Palmas, España".
+🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España".
 
 ⌚ HT'
 
-🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Atlético de Madrid 🔴
+🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Real Betis 🟢
 
 ${eventos.join("\n")}
 
@@ -420,13 +381,13 @@ imagen ? [imagen.url] : undefined
 content:
 `✅ Finalizado ✅
 
-🏆 | Copa de La Reina 👑
+🏆 | LaLiga EA Sports 🇪🇸
 
-📆 | Final.
+📆 | Jornada 37.
 
-🏟️ | "Estadio de Gran Canaria, Las Palmas, España".
+🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España".
 
-🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Atlético de Madrid 🔴
+🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Real Betis 🟢
 
 ${eventos.join("\n")}
 
