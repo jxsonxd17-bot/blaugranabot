@@ -4,54 +4,11 @@ const {
     Partials
 } = require("discord.js");
 
-const client = new Client({
-
-    intents: [
-
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.DirectMessages
-    ],
-
-    partials: [
-        Partials.Channel
-    ]
-});
-
-// =======================
-// READY
-// =======================
-
-client.once("ready", () => {
-
-    console.log(
-        `✅ Bot conectado como ${client.user.tag}`
-    );
-
-    client.user.setPresence({
-
-        activities: [
-            {
-                name: "LaCasaBlaugrana 💙❤️"
-            }
-        ],
-
-        status: "online"
-    });
-});
-
-// =======================
-// COMANDOS
-// =======================
-
-const {
-    Client,
-    GatewayIntentBits,
-    Partials
-} = require("discord.js");
-
 require("dotenv").config();
+
+// =======================
+// CLIENTE
+// =======================
 
 const client = new Client({
 
