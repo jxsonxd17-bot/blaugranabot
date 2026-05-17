@@ -8,6 +8,9 @@ module.exports = (client) => {
     let ultimoMarcador = '';
     let ultimoMinutoPublicado = -1;
 
+    let imagenInicioMandada = false;
+    let imagenSegundoTiempo = false;
+
     setInterval(async () => {
 
         try {
@@ -39,95 +42,213 @@ module.exports = (client) => {
 
             const minuto = partido.minute || 0;
 
-            const marcadorActual = `${golesLocal}-${golesVisitante}`;
+            const marcadorActual =
+                `${golesLocal}-${golesVisitante}`;
 
+            // =======================
             // INICIO DEL PARTIDO
-            if (estado === 'IN_PLAY' && ultimoEstado !== 'IN_PLAY') {
+            // =======================
 
-                canal.send(
-                    `‼️ **En Vivo** ‼️\n\n` +
-                    `🏆 | Laliga EA Sports\n\n` +
-                    `📆 | Jornada 37.\n\n` +
-                    `🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España\n\n` +
-                    `⌚️ | ¡Comenzó el partido!\n\n` +
-                    `🔵 ${local} | 0️⃣ - 0️⃣ | ${visitante} 🟢\n\n` +
-                    `@LaCasaBlaugrana💙❤️`
-                );
+            if (
+                estado === 'IN_PLAY' &&
+                ultimoEstado !== 'IN_PLAY'
+            ) {
+
+                await canal.send({
+
+content:
+`‼️ **En Vivo** ‼️
+
+🏆 | Laliga EA Sports 🇪🇸
+
+📆 | Jornada 37.
+
+🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España.
+
+⌚️ | ¡Comenzó el partido!
+
+🔵 ${local} | 0️⃣ - 0️⃣ | ${visitante} 🟢
+
+@LaCasaBlaugrana💙❤️`,
+
+files:
+!imagenInicioMandada
+? [
+"https://media.discordapp.net/attachments/1493414573603291380/1505638598219923557/Inicio_20260517132941.png?ex=6a0b5ab7&is=6a0a0937&hm=09d7607e4ab43b74237abb4bb62272d6a2523c75f49f62060f0f755184751b12&=&format=webp&quality=lossless&width=621&height=777"
+]
+: []
+
+                });
+
+                imagenInicioMandada = true;
             }
 
+            // =======================
             // GOLES
-if (marcadorActual !== ultimoMarcador && ultimoMarcador !== '') {
+            // =======================
 
-    const barcaMarco =
-        (local === 'FC Barcelona' && golesLocal > parseInt(ultimoMarcador.split('-')[0])) ||
+            if (
+                marcadorActual !== ultimoMarcador &&
+                ultimoMarcador !== ''
+            ) {
 
-        (visitante === 'FC Barcelona' && golesVisitante > parseInt(ultimoMarcador.split('-')[1]));
+                const barcaMarco =
 
-    if (barcaMarco) {
+                    (
+                        local === 'FC Barcelona' &&
+                        golesLocal >
+                        parseInt(
+                            ultimoMarcador.split('-')[0]
+                        )
+                    )
 
-        canal.send(
-            `🚨 **GOOOOOOOOOOL DEL BARÇA** 🚨\n\n` +
-            `⌚️ ${minuto}'\n\n` +
-            `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
-            `@LaCasaBlaugrana💙❤️`
-        );
+                    ||
 
-    } else {
+                    (
+                        visitante === 'FC Barcelona' &&
+                        golesVisitante >
+                        parseInt(
+                            ultimoMarcador.split('-')[1]
+                        )
+                    );
 
-        canal.send(
-            `⚽ Gol del Betis.\n\n` +
-            `⌚️ ${minuto}'\n\n` +
-            `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
-            `@LaCasaBlaugrana💙❤️`
-        );
-    }
-}
+                if (barcaMarco) {
 
+                    await canal.send(
+`🚨 **GOOOOOOOOOOL DEL BARÇA** 🚨
+
+⌚️ ${minuto}'
+
+🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢
+
+@LaCasaBlaugrana💙❤️`
+                    );
+
+                } else {
+
+                    await canal.send(
+`⚽ Gol del rival.
+
+⌚️ ${minuto}'
+
+🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢
+
+@LaCasaBlaugrana💙❤️`
+                    );
+                }
+            }
+
+            // =======================
             // CADA 15 MINUTOS
-            const bloques = [15, 30, 45, 60, 75, 90];
+            // =======================
+
+            const bloques =
+                [15, 30, 45, 60, 75, 90];
 
             if (
                 bloques.includes(minuto) &&
                 ultimoMinutoPublicado !== minuto
             ) {
 
-                canal.send(
-                    `‼️ **En Vivo** ‼️\n\n` +
-                    `🏆 | Laliga EA Sports\n\n` +
-                    `📆 | Jornada 37.\n\n` +
-                    `🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España\n\n` +
-                    `⌚️ ${minuto}'\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
-                    `@LaCasaBlaugrana💙❤️`
+                await canal.send(
+`‼️ **En Vivo** ‼️
+
+🏆 | Laliga EA Sports 🇪🇸
+
+📆 | Jornada 37.
+
+🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España.
+
+⌚️ ${minuto}'
+
+🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢
+
+@LaCasaBlaugrana💙❤️`
                 );
 
                 ultimoMinutoPublicado = minuto;
             }
 
+            // =======================
             // MEDIO TIEMPO
-            if (estado === 'PAUSED' && ultimoEstado !== 'PAUSED') {
+            // =======================
 
-                canal.send(
-                    `⏱️ **MEDIO TIEMPO** ⏱️\n\n` +
-                    `🏆 | Laliga EA Sports\n\n` +
-                    `📆 | Jornada 37.\n\n` +
-                    `🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
-                    `@LaCasaBlaugrana💙❤️`
+            if (
+                estado === 'PAUSED' &&
+                ultimoEstado !== 'PAUSED'
+            ) {
+
+                await canal.send(
+`⏱️ **MEDIO TIEMPO** ⏱️
+
+🏆 | Laliga EA Sports 🇪🇸
+
+📆 | Jornada 37.
+
+🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España.
+
+🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢
+
+@LaCasaBlaugrana💙❤️`
                 );
             }
 
-            // FINAL
-            if (estado === 'FINISHED' && ultimoEstado !== 'FINISHED') {
+            // =======================
+            // SEGUNDO TIEMPO
+            // =======================
 
-                canal.send(
-                    `✅ **FINAL DEL PARTIDO** ✅\n\n` +
-                    `🏆 | Laliga EA Sports\n\n` +
-                    `📆 | Jornada 37.\n\n` +
-                    `🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España\n\n` +
-                    `🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢\n\n` +
-                    `@LaCasaBlaugrana💙❤️`
+            if (
+                estado === 'IN_PLAY' &&
+                ultimoEstado === 'PAUSED' &&
+                !imagenSegundoTiempo
+            ) {
+
+                await canal.send({
+
+content:
+`🔥 ¡COMENZÓ EL SEGUNDO TIEMPO!
+
+🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} 🟢
+
+@LaCasaBlaugrana💙❤️`,
+
+files:
+[
+"https://media.discordapp.net/attachments/1493414573603291380/1505638598219923557/Inicio_20260517132941.png?ex=6a0b5ab7&is=6a0a0937&hm=09d7607e4ab43b74237abb4bb62272d6a2523c75f49f62060f0f755184751b12&=&format=webp&quality=lossless&width=621&height=777"
+]
+
+                });
+
+                imagenSegundoTiempo = true;
+            }
+
+            // =======================
+            // FINAL
+            // =======================
+
+            if (
+                estado === 'FINISHED' &&
+                ultimoEstado !== 'FINISHED'
+            ) {
+
+                await canal.send(
+`✅ **FINAL DEL PARTIDO** ✅
+
+🏆 | Laliga EA Sports 🇪🇸
+
+📆 | Jornada 37.
+
+🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España.
+
+🔵 ${local} | ${golesLocal}️⃣ - ${golesVisitante}️⃣ | ${visitante} ⚪
+
+@LaCasaBlaugrana💙❤️`
                 );
+
+                // RESETEAR
+
+                imagenInicioMandada = false;
+                imagenSegundoTiempo = false;
             }
 
             ultimoEstado = estado;
