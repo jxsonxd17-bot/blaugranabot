@@ -82,7 +82,8 @@ if (partida) {
                 configurando: true,
                 maxImpostores: 1,
                 ultimaActividad: Date.now(),
-                alertaInactividad: false
+                alertaInactividad: false,
+                eliminados: []
             });
 
             const embed = new EmbedBuilder()
@@ -408,6 +409,31 @@ ${mensaje}`
         const partidaTurno =
             partidas.get(message.guild.id);
 
+if (
+    partidaTurno &&
+    partidaTurno.eliminados.includes(
+        message.author.id
+    )
+) {
+
+    await message.delete().catch(() => {});
+
+try {
+
+    await message.author.send(
+`👻 ESTÁS ELIMINADO
+
+Ya no puedes:
+• hablar
+• votar
+• enviar pistas`
+    );
+
+} catch {}
+
+return;
+}
+
         if (
             partidaTurno &&
             partidaTurno.iniciada
@@ -598,6 +624,30 @@ ${mensaje}`
 
         if (contenido.startsWith("!votar")) {
 
+            if (
+    partida.eliminados.includes(
+        message.author.id
+    )
+) {
+
+    await message.delete().catch(() => {});
+
+try {
+
+    await message.author.send(
+`👻 ESTÁS ELIMINADO
+
+Ya no puedes:
+• hablar
+• votar
+• enviar pistas`
+    );
+
+} catch {}
+
+return;
+}
+
             const partida =
                 partidas.get(message.guild.id);
 
@@ -699,6 +749,10 @@ ${mensaje}`
                     partida.impostores.length === 1
                         ? "🕵️ EL IMPOSTOR ERA..."
                         : "🕵️ LOS IMPOSTORES ERAN...";
+
+                partida.eliminados.push(
+                masVotado
+                );
 
                 const ganaronJugadores =
                     partida.impostores.includes(
@@ -991,53 +1045,7 @@ ${palabra}`
     }
 });
 
-};
-
-async function preguntarImpostores(
-    interaction
-) {
-
-    const botones =
-        new ActionRowBuilder()
-        .addComponents(
-
-            new ButtonBuilder()
-                .setCustomId("imp_1")
-                .setLabel("1")
-                .setStyle(ButtonStyle.Primary),
-
-            new ButtonBuilder()
-                .setCustomId("imp_2")
-                .setLabel("2")
-                .setStyle(ButtonStyle.Primary),
-
-            new ButtonBuilder()
-                .setCustomId("imp_3")
-                .setLabel("3")
-                .setStyle(ButtonStyle.Primary),
-
-            new ButtonBuilder()
-                .setCustomId("imp_4")
-                .setLabel("4")
-                .setStyle(ButtonStyle.Danger)
-        );
-
-    const embed =
-        new EmbedBuilder()
-        .setColor("#D72638")
-        .setTitle("🕵️ IMPOSTORES")
-        .setDescription(
-`¿Cuántos impostores quieres?`
-        );
-
-    return interaction.followUp({
-        embeds: [embed],
-        components: [botones]
-    });
-
-    }
-
-    setInterval(async () => {
+setInterval(async () => {
 
     for (
         const [guildID, partida]
@@ -1099,3 +1107,50 @@ async function preguntarImpostores(
     }
 
 }, 60000);
+
+
+};
+
+async function preguntarImpostores(
+    interaction
+) {
+
+    const botones =
+        new ActionRowBuilder()
+        .addComponents(
+
+            new ButtonBuilder()
+                .setCustomId("imp_1")
+                .setLabel("1")
+                .setStyle(ButtonStyle.Primary),
+
+            new ButtonBuilder()
+                .setCustomId("imp_2")
+                .setLabel("2")
+                .setStyle(ButtonStyle.Primary),
+
+            new ButtonBuilder()
+                .setCustomId("imp_3")
+                .setLabel("3")
+                .setStyle(ButtonStyle.Primary),
+
+            new ButtonBuilder()
+                .setCustomId("imp_4")
+                .setLabel("4")
+                .setStyle(ButtonStyle.Danger)
+        );
+
+    const embed =
+        new EmbedBuilder()
+        .setColor("#D72638")
+        .setTitle("🕵️ IMPOSTORES")
+        .setDescription(
+`¿Cuántos impostores quieres?`
+        );
+
+    return interaction.followUp({
+        embeds: [embed],
+        components: [botones]
+    });
+
+}
