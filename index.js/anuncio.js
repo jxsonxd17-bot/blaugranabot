@@ -10,27 +10,51 @@ module.exports = (client) => {
         // COMANDO
         if (message.content.startsWith('!anuncio')) {
 
-            const anuncio = message.content.slice(9).trim();
+            const anuncio =
+                message.content.slice(9).trim();
 
-            if (!anuncio) {
-                return message.reply('❌ Escribe un anuncio.');
+            const imagen =
+                [...message.attachments.values()][0];
+
+            if (!anuncio && !imagen) {
+
+                return message.reply(
+                    '❌ Escribe un anuncio o adjunta una imagen.'
+                );
             }
 
             // ID DEL CANAL DE ANUNCIOS
-            const canal = client.channels.cache.get('1493418712416518305');
+            const canal =
+                client.channels.cache.get(
+                    '1493418712416518305'
+                );
 
             if (!canal) {
-                return message.reply('❌ Canal no encontrado.');
+
+                return message.reply(
+                    '❌ Canal no encontrado.'
+                );
             }
 
-            canal.send(
-                `@everyone\n\n` +
-                `📢 **NUEVO ANUNCIO** 📢\n\n` +
-                `${anuncio}\n\n` +
-                `@LaCasaBlaugrana💙❤️`
-            );
+            await canal.send({
 
-            message.reply('✅ Anuncio enviado.');
+content:
+`@everyone
+
+📢 **NUEVO ANUNCIO** 📢
+
+${anuncio || ""}
+
+@LaCasaBlaugrana💙❤️`,
+
+files:
+imagen ? [imagen.url] : []
+
+            });
+
+            return message.reply(
+                '✅ Anuncio enviado.'
+            );
         }
     });
 };

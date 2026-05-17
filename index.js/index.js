@@ -1,60 +1,109 @@
-module.exports = (client) => {
+const {
+    Client,
+    GatewayIntentBits,
+    Partials
+} = require("discord.js");
 
-    client.on('messageCreate', async message => {
+const client = new Client({
 
-        if (message.author.bot) return;
+    intents: [
 
-        // SOLO ADMINS
-        if (!message.member.permissions.has('Administrator')) return;
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.DirectMessages
+    ],
 
-        // COMANDO
-        if (message.content.startsWith('!anuncio')) {
+    partials: [
+        Partials.Channel
+    ]
+});
 
-            const anuncio =
-                message.content.slice(9).trim();
+// =======================
+// READY
+// =======================
 
-            const imagen =
-                [...message.attachments.values()][0];
+client.once("ready", () => {
 
-            if (!anuncio && !imagen) {
+    console.log(
+        `✅ Bot conectado como ${client.user.tag}`
+    );
 
-                return message.reply(
-                    '❌ Escribe un anuncio o adjunta una imagen.'
-                );
+    client.user.setPresence({
+
+        activities: [
+            {
+                name: "LaCasaBlaugrana 💙❤️"
             }
+        ],
 
-            // ID DEL CANAL DE ANUNCIOS
-            const canal =
-                client.channels.cache.get(
-                    '1493418712416518305'
-                );
-
-            if (!canal) {
-
-                return message.reply(
-                    '❌ Canal no encontrado.'
-                );
-            }
-
-            await canal.send({
-
-content:
-`@everyone
-
-📢 **NUEVO ANUNCIO** 📢
-
-${anuncio || ""}
-
-@LaCasaBlaugrana💙❤️`,
-
-files:
-imagen ? [imagen.url] : []
-
-            });
-
-            return message.reply(
-                '✅ Anuncio enviado.'
-            );
-        }
+        status: "online"
     });
-};
+});
+
+// =======================
+// COMANDOS
+// =======================
+
+const {
+    Client,
+    GatewayIntentBits,
+    Partials
+} = require("discord.js");
+
+require("dotenv").config();
+
+const client = new Client({
+
+    intents: [
+
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.DirectMessages
+    ],
+
+    partials: [
+        Partials.Channel
+    ]
+});
+
+// =======================
+// READY
+// =======================
+
+client.once("ready", () => {
+
+    console.log(
+        `✅ Bot conectado como ${client.user.tag}`
+    );
+
+    client.user.setPresence({
+
+        activities: [
+            {
+                name: "LaCasaBlaugrana 💙❤️"
+            }
+        ],
+
+        status: "online"
+    });
+});
+
+// =======================
+// CARGAR ARCHIVOS
+// =======================
+
+require("./anuncio")(client);
+require("./bienvenida")(client);
+require("./impostor")(client);
+require("./live")(client);
+require("./partido")(client);
+require("./rata")(client);
+require("./tabla")(client);
+
+// =======================
+// LOGIN
+// =======================
+
+client.login(process.env.TOKEN);
