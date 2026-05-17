@@ -13,6 +13,7 @@ let marcadorAtleti = 0;
 let minutoActual = "0";
 
 let eventos = [];
+let cambios = [];
 
 // =======================
 // EXPORT
@@ -25,19 +26,14 @@ module.exports = (client) => {
         if (message.author.bot) return;
         if (!message.guild) return;
 
-        // if (
-//     message.channel.id !== canalFemeniID
-// )
-// return;
-
         const contenido =
             message.content;
 
         const imagen =
-    [...message.attachments.values()][0];
+            [...message.attachments.values()][0];
 
-    const canal =
-    client.channels.cache.get(canalFemeniID);
+        const canal =
+            client.channels.cache.get(canalFemeniID);
 
         // =======================
         // LIVE
@@ -85,11 +81,11 @@ module.exports = (client) => {
 content:
 `‼️ En Vivo ‼️
 
-🏆 | LaLiga EA Sports 🇪🇸
+🏆 |Laliga EA Sports
 
-📆 | Jornada 37.
+📆 | Jornada 37
 
-🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España".
+🏟️ | "Spotify Camp Nou"
 
 ⌚ ${minutoActual}'
 
@@ -129,7 +125,7 @@ imagen ? [imagen.url] : undefined
             ) {
 
                 return message.reply(
-"⚠️ Usa: !comentario 23 Qué golazo"
+                    "⚠️ Usa: !comentario 23 Qué golazo"
                 );
             }
 
@@ -147,7 +143,6 @@ imagen ? [imagen.url] : undefined
 
             });
         }
-
 
         // =======================
         // GOL BARÇA
@@ -175,7 +170,7 @@ imagen ? [imagen.url] : undefined
             ) {
 
                 return message.reply(
-"⚠️ Usa: !gol_fcb Aitana 23 Graham"
+                    "⚠️ Usa: !gol_fcb Aitana 23 Graham"
                 );
             }
 
@@ -234,20 +229,20 @@ imagen ? [imagen.url] : undefined
             ) {
 
                 return message.reply(
-"⚠️ Usa: !gol_atm Gio 45"
+                    "⚠️ Usa: !gol_atm Gio 45"
                 );
             }
 
             marcadorAtleti++;
 
             eventos.push(
-`⚽ ${goleadora} ${minuto}' 🔴`
+`⚽ ${goleadora} ${minuto}' 🟢`
             );
 
             return canal.send({
 
 content:
-`⚽ Gol del Atlético de Madrid.
+`⚽ Gol del Betis.
 
 ⌚ ${minuto}'
 
@@ -277,12 +272,12 @@ imagen ? [imagen.url] : undefined
                     ""
                 );
 
-            const cambios =
+            const listaCambios =
                 texto.split(" - ");
 
             let resultado = "";
 
-            for (const cambio of cambios) {
+            for (const cambio of listaCambios) {
 
                 const partes =
                     cambio.split(" ");
@@ -300,8 +295,8 @@ imagen ? [imagen.url] : undefined
 `;
             }
 
-            eventos.push(
-resultado.trim()
+            cambios.push(
+                resultado.trim()
             );
 
             return canal.send({
@@ -340,13 +335,54 @@ imagen ? [imagen.url] : undefined
 content:
 `⏱️ Medio Tiempo ⏱️
 
-🏆 | LaLiga EA Sports 🇪🇸
+🏆 |Laliga EA Sports
 
-📆 | Jornada 37.
+📆 | Jornada 37
 
-🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España".
+🏟️ | "Spotify Camp Nou"
 
 ⌚ HT'
+
+🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Real Betis 🟢
+
+${eventos.join("\n")}
+
+${comentario}
+
+@LaCasaBlaugrana💙❤️`,
+
+files:
+imagen ? [imagen.url] : undefined
+
+            });
+        }
+
+        // =======================
+        // SEGUNDO TIEMPO
+        // =======================
+
+        if (
+            contenido.startsWith("!st")
+        ) {
+
+            const comentario =
+                contenido.replace(
+                    "!st ",
+                    ""
+                );
+
+            return canal.send({
+
+content:
+`🔥 Segundo Tiempo 🔥
+
+🏆 |Laliga EA Sports
+
+📆 | Jornada 37
+
+🏟️ | "Spotify Camp Nou"
+
+⌚ 46'
 
 🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Real Betis 🟢
 
@@ -381,11 +417,11 @@ imagen ? [imagen.url] : undefined
 content:
 `✅ Finalizado ✅
 
-🏆 | LaLiga EA Sports 🇪🇸
+🏆 |Laliga EA Sports
 
-📆 | Jornada 37.
+📆 | Jornada 37
 
-🏟️ | "Spotify Camp Nou", Les Corts, Barcelona, España".
+🏟️ | "Spotify Camp Nou"
 
 🔵 FC Barcelona | ${marcadorBarca} - ${marcadorAtleti} | Real Betis 🟢
 
