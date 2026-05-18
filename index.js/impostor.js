@@ -21,6 +21,10 @@ const partidas = new Map();
 
 module.exports = (client) => {
 
+    client.removeAllListeners(
+    "messageCreate"
+);
+
     client.on("messageCreate", async (message) => {
 
         if (message.author.bot) return;
@@ -797,6 +801,10 @@ return;
 // =======================
 // BOTONES
 // =======================
+
+client.removeAllListeners(
+    "interactionCreate"
+);
 
 client.on("interactionCreate", async (interaction) => {
 
