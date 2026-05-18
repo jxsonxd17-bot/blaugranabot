@@ -249,10 +249,21 @@ if (contenido === "!cancelar") {
         );
     }
 
-    if (
-        message.author.id !==
-        partida.host
-    ) {
+    const esAdmin =
+message.member.roles.cache.some(
+role => role.name === "Admin"
+);
+
+if (
+    message.author.id !==
+    partida.host &&
+    !esAdmin
+) {
+
+    return message.reply(
+        "❌ Solo el host o Admin puede cancelar."
+    );
+} {
 
         return message.reply(
             "❌ Solo el host puede cancelar."
@@ -1068,71 +1079,7 @@ ${palabra}`
     }
 });
 
-setInterval(async () => {
-
-    for (
-        const [guildID, partida]
-        of partidas
-    ) {
-
-        const ahora = Date.now();
-
-        const tiempoInactivo =
-            ahora - partida.ultimaActividad;
-
-        const guild =
-            client.guilds.cache.get(guildID);
-
-        if (!guild) continue;
-
-        const canal =
-            guild.channels.cache.get(
-                canalJuegoID
-            );
-
-        if (!canal) continue;
-
-        // ALERTA
-
-        if (
-            tiempoInactivo >=
-            10 * 60 * 1000 &&
-            !partida.alertaInactividad
-        ) {
-
-            partida.alertaInactividad = true;
-
-            canal.send(
-"⚠️ La sala será cerrada en 10 segundos por inactividad.\n\n👑 El host debe enviar un mensaje para mantenerla activa."
-            );
-
-            setTimeout(() => {
-
-                const partidaActual =
-                    partidas.get(guildID);
-
-                if (!partidaActual) return;
-
-                if (
-                    partidaActual.alertaInactividad
-                ) {
-
-                    partidas.delete(guildID);
-
-                    canal.send(
-                        "💀 Sala cerrada por inactividad."
-                    );
-                }
-
-            }, 10000);
-        }
-
-    }
-
-}, 60000);
-
-
-};
+}
 
 async function preguntarImpostores(
     interaction
