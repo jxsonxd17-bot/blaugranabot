@@ -815,6 +815,21 @@ client.on("interactionCreate", async (interaction) => {
 
     if (!partida) return;
 
+    if (
+    interaction.user.id !==
+    partida.host
+) {
+
+    return interaction.reply({
+
+content:
+"❌ Solo el host puede usar estos botones.",
+
+ephemeral: true
+
+    });
+}
+
     // =======================
     // MODO EQUIPO
     // =======================
