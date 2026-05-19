@@ -263,12 +263,7 @@ if (
     return message.reply(
         "❌ Solo el host o Admin puede cancelar."
     );
-} {
-
-        return message.reply(
-            "❌ Solo el host puede cancelar."
-        );
-    }
+}
 
     partidas.delete(message.guild.id);
 

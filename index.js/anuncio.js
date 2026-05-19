@@ -5,7 +5,11 @@ module.exports = (client) => {
         if (message.author.bot) return;
 
         // SOLO ADMINS
-        if (!message.member.permissions.has('Administrator')) return;
+        if (
+!message.member.permissions.has(
+"Administrator"
+)
+) return;
 
         // COMANDO
         if (message.content.startsWith('!anuncio')) {
