@@ -9,10 +9,10 @@ const partidos = {};
 // =======================
 
 const canalMasculinoID =
-"PEGA_AQUI_ID_CANAL_MASCULINO";
+"1504132193532772542";
 
 const canalFemeninoID =
-"PEGA_AQUI_ID_CANAL_FEMENINO";
+"1505237014033993739";
 
 // =======================
 // DISCORD
