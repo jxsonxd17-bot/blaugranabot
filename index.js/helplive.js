@@ -2,9 +2,8 @@
 // HELP LIVE
 // =======================
 
-const {
-    EmbedBuilder
-} = require("discord.js");
+const { EmbedBuilder } =
+require("discord.js");
 
 if (
     contenido === "!help_live"
@@ -18,7 +17,7 @@ if (
         .setTitle("📖 COMANDOS COBERTURA")
 
         .setDescription(
-`Sistema de cobertura multicentral para partidos masculinos y femeninos.`
+`Sistema de cobertura multicanal para partidos masculinos y femeninos.`
         )
 
         .addFields(
@@ -37,10 +36,10 @@ inline: false
 {
 name: "📡 EN VIVO",
 value:
-`🔹 !live_m
+`🔹 !live_m minuto comentario
 Cobertura en vivo masculina
 
-🔹 !live_f
+🔹 !live_f minuto comentario
 Cobertura en vivo femenina`,
 inline: false
 },
@@ -48,10 +47,10 @@ inline: false
 {
 name: "🎙️ COMENTARIOS",
 value:
-`🔹 !comentario_m
+`🔹 !comentario_m minuto comentario
 Comentario masculino
 
-🔹 !comentario_f
+🔹 !comentario_f minuto comentario
 Comentario femenino`,
 inline: false
 },
@@ -59,16 +58,16 @@ inline: false
 {
 name: "⚽ GOLES",
 value:
-`🔹 !gol_local_m
+`🔹 !gol_local_m jugador minuto asistencia
 Gol local masculino
 
-🔹 !gol_local_f
+🔹 !gol_local_f jugador minuto asistencia
 Gol local femenino
 
-🔹 !gol_visitante_m
+🔹 !gol_visitante_m jugador minuto
 Gol visitante masculino
 
-🔹 !gol_visitante_f
+🔹 !gol_visitante_f jugador minuto
 Gol visitante femenino`,
 inline: false
 },
@@ -76,39 +75,60 @@ inline: false
 {
 name: "🔄 CAMBIOS",
 value:
-`🔹 !cambio_m
+`🔹 !cambio_m minuto entra - sale
 Cambios masculinos
 
-🔹 !cambio_f
-Cambios femeninos`,
+🔹 !cambio_f minuto entra - sale
+Cambios femeninos
+
+📌 Varios cambios:
+entra - sale / entra - sale`,
 inline: false
 },
 
 {
 name: "⏱️ PARTIDO",
 value:
-`🔹 !ht_m / !ht_f
-Medio tiempo
+`🔹 !ht_m comentario
+Medio tiempo masculino
 
-🔹 !st_m / !st_f
-Segundo tiempo
+🔹 !ht_f comentario
+Medio tiempo femenino
 
-🔹 !ft_m / !ft_f
-Final del partido`,
+🔹 !st_m comentario
+Segundo tiempo masculino
+
+🔹 !st_f comentario
+Segundo tiempo femenino
+
+🔹 !ft_m comentario
+Final masculino
+
+🔹 !ft_f comentario
+Final femenino`,
 inline: false
 },
 
 {
 name: "📋 UTILIDADES",
 value:
-`🔹 !info_m / !info_f
-Información del partido
+`🔹 !info_m
+Información masculina
 
-🔹 !reset_m / !reset_f
-Reinicia cobertura
+🔹 !info_f
+Información femenina
 
-🔹 !undo_m / !undo_f
-Elimina último evento`,
+🔹 !reset_m
+Reinicia cobertura masculina
+
+🔹 !reset_f
+Reinicia cobertura femenina
+
+🔹 !undo_m
+Elimina último evento masculino
+
+🔹 !undo_f
+Elimina último evento femenino`,
 inline: false
 },
 
@@ -123,6 +143,10 @@ value:
 inline: false
 }
 
+)
+
+.setThumbnail(
+client.user.displayAvatarURL()
 )
 
 .setFooter({
