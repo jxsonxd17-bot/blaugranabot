@@ -297,7 +297,7 @@ ${marcador(partido)}`
 
                 canal,
 
-`‼️ EN VIVO ‼️
+`**‼️ EN VIVO ‼️**
 
 ${header(partido)}
 
@@ -307,7 +307,7 @@ ${marcador(partido)}
 
 ${partido.eventos.join("\n")}
 
-${comentario ? `🔥 ${comentario}` : ""}
+${comentario ? `${comentario}` : ""}
 
 @LaCasaBlaugrana💙❤️`,
 
@@ -520,7 +520,7 @@ ${partido.eventos.join("\n")}
 
                 canal,
 
-`🔄 CAMBIOS 🔄
+`**🔄 CAMBIOS 🔄**
 
 ⌚ ${minuto}'
 
@@ -552,7 +552,7 @@ ${resultado}
 
                 canal,
 
-`⏱️ MEDIO TIEMPO
+`**⏱️ MEDIO TIEMPO ⏱️**
 
 ${header(partido)}
 
@@ -588,7 +588,7 @@ ${comentario}
 
                 canal,
 
-`🔥 SEGUNDO TIEMPO
+`**🔥 SEGUNDO TIEMPO 🔥**
 
 ${header(partido)}
 
@@ -624,7 +624,7 @@ ${comentario}
 
                 canal,
 
-`✅ FINALIZADO
+`**✅ FINALIZADO ✅**
 
 ${header(partido)}
 
