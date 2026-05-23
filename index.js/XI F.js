@@ -18,7 +18,7 @@ module.exports = (client) => {
         // =======================
 
         if (
-            message.content.startsWith("!xi")
+            message.content.startsWith("!xif")
         ) {
 
             const rival =
