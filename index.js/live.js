@@ -9,10 +9,10 @@ const partidos = {};
 // =======================
 
 const canalMasculinoID =
-"1504132193532772542";
+"PEGA_AQUI_ID_CANAL_MASCULINO";
 
 const canalFemeninoID =
-"1505237014033993739";
+"PEGA_AQUI_ID_CANAL_FEMENINO";
 
 // =======================
 // DISCORD
@@ -232,6 +232,22 @@ ${marcador(partido)}`
         }
 
         // =======================
+        // UNDO
+        // =======================
+
+        if (
+            contenido === `!undo_${tipo}`
+        ) {
+
+            partido.eventos.pop();
+
+            return message.reply(
+                "↩️ Último evento eliminado."
+            );
+
+        }
+
+        // =======================
         // LIVE
         // =======================
 
@@ -265,6 +281,41 @@ ${marcador(partido)}
 ${partido.eventos.join("\n")}
 
 ${comentario ? `🔥 ${comentario}` : ""}
+
+@LaCasaBlaugrana💙❤️`,
+
+                imagen
+
+            );
+
+        }
+
+        // =======================
+        // COMENTARIO
+        // =======================
+
+        if (
+            contenido.startsWith(`!comentario_${tipo}`)
+        ) {
+
+            const args =
+                contenido.split(" ");
+
+            const minuto =
+                args[1];
+
+            const comentario =
+                args.slice(2).join(" ");
+
+            return enviar(
+
+                canal,
+
+`🎙️ Comentario
+
+⌚ ${minuto}'
+
+${comentario}
 
 @LaCasaBlaugrana💙❤️`,
 
