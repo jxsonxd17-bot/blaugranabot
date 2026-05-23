@@ -5,7 +5,14 @@
 const partidos = {};
 
 // =======================
-// IDS DE CANALES
+// CANAL COMANDOS
+// =======================
+
+const canalComandosID =
+"1493414573603291380";
+
+// =======================
+// CANALES COBERTURA
 // =======================
 
 const canalMasculinoID =
@@ -98,6 +105,14 @@ module.exports = (client) => {
         if (message.author.bot) return;
         if (!message.guild) return;
 
+        // =======================
+        // SOLO CANAL COMANDOS
+        // =======================
+
+        if (
+            message.channel.id !== canalComandosID
+        ) return;
+
         const contenido =
             message.content;
 
@@ -105,13 +120,13 @@ module.exports = (client) => {
             [...message.attachments.values()][0];
 
         // =======================
-        // DETECTAR CANAL
+        // DETECTAR TIPO
         // =======================
 
         let tipo = null;
 
         if (
-            message.channel.id === canalMasculinoID
+            contenido.includes("_m")
         ) {
 
             tipo = "m";
@@ -119,7 +134,7 @@ module.exports = (client) => {
         }
 
         if (
-            message.channel.id === canalFemeninoID
+            contenido.includes("_f")
         ) {
 
             tipo = "f";
@@ -128,8 +143,20 @@ module.exports = (client) => {
 
         if (!tipo) return;
 
+        // =======================
+        // CANAL DESTINO
+        // =======================
+
         const canal =
-            message.channel;
+        tipo === "m"
+
+        ? client.channels.cache.get(
+            canalMasculinoID
+        )
+
+        : client.channels.cache.get(
+            canalFemeninoID
+        );
 
         const canalID =
             canal.id;
