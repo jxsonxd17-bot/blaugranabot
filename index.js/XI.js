@@ -23,7 +23,7 @@ module.exports = (client) => {
 
             const rival =
                 message.content
-                .slice(8)
+                .replace("!xi", "")
                 .trim();
 
             if (!rival) {
@@ -57,15 +57,15 @@ module.exports = (client) => {
 
             await canal.send({
 
-content:
+                content:
 `📋 | Alineación oficial del FC Barcelona 🔵🔴
 
 ⚔️ | Partido ante ${rival}.
 
 💙❤️ @LaCasaBlaugrana`,
 
-files:
-[imagen.url]
+                files:
+                [imagen.url]
 
             });
 
