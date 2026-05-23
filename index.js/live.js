@@ -5,6 +5,24 @@
 const partidos = {};
 
 // =======================
+// IDS DE CANALES
+// =======================
+
+const canalMasculinoID =
+"1504132193532772542";
+
+const canalFemeninoID =
+"1505237014033993739";
+
+// =======================
+// DISCORD
+// =======================
+
+const {
+    EmbedBuilder
+} = require("discord.js");
+
+// =======================
 // CREAR PARTIDO
 // =======================
 
@@ -42,19 +60,15 @@ function crearPartido() {
 
 function header(partido) {
 
-    return `
-🏆 | ${partido.torneo}
+    return `🏆 | ${partido.torneo}
 📆 | ${partido.jornada}
-🏟️ | ${partido.estadio}
-`;
+🏟️ | ${partido.estadio}`;
 
 }
 
 function marcador(partido) {
 
-    return `
-${partido.emojiLocal} ${partido.local} | ${partido.marcadorLocal} - ${partido.marcadorVisitante} | ${partido.visitante} ${partido.emojiVisitante}
-`;
+    return `${partido.emojiLocal} ${partido.local} | ${partido.marcadorLocal} - ${partido.marcadorVisitante} | ${partido.visitante} ${partido.emojiVisitante}`;
 
 }
 
@@ -90,6 +104,30 @@ module.exports = (client) => {
         const imagen =
             [...message.attachments.values()][0];
 
+        // =======================
+        // DETECTAR CANAL
+        // =======================
+
+        let tipo = null;
+
+        if (
+            message.channel.id === canalMasculinoID
+        ) {
+
+            tipo = "m";
+
+        }
+
+        if (
+            message.channel.id === canalFemeninoID
+        ) {
+
+            tipo = "f";
+
+        }
+
+        if (!tipo) return;
+
         const canal =
             message.channel;
 
@@ -115,14 +153,14 @@ module.exports = (client) => {
         // =======================
 
         if (
-            contenido.startsWith("!setup_m") ||
-            contenido.startsWith("!setup_f")
+            contenido.startsWith(`!setup_${tipo}`)
         ) {
 
             const texto =
-                contenido
-                .replace("!setup_m ", "")
-                .replace("!setup_f ", "");
+                contenido.replace(
+                    `!setup_${tipo} `,
+                    ""
+                );
 
             const datos =
                 texto.split(" - ");
@@ -131,7 +169,7 @@ module.exports = (client) => {
 
                 return message.reply(
 `⚠️ Usa:
-!setup_m torneo - jornada - estadio - local - visitante - emojiLocal - emojiVisitante - favorito`
+!setup_${tipo} torneo - jornada - estadio - local - visitante - emojiLocal - emojiVisitante - favorito`
                 );
 
             }
@@ -160,16 +198,13 @@ ${partido.local} vs ${partido.visitante}`
         // =======================
 
         if (
-            contenido === "!info_m" ||
-            contenido === "!info_f"
+            contenido === `!info_${tipo}`
         ) {
 
             return message.reply(
-`
-${header(partido)}
+`${header(partido)}
 
-${marcador(partido)}
-`
+${marcador(partido)}`
             );
 
         }
@@ -179,8 +214,7 @@ ${marcador(partido)}
         // =======================
 
         if (
-            contenido === "!reset_m" ||
-            contenido === "!reset_f"
+            contenido === `!reset_${tipo}`
         ) {
 
             partido.marcadorLocal = 0;
@@ -198,29 +232,11 @@ ${marcador(partido)}
         }
 
         // =======================
-        // UNDO
-        // =======================
-
-        if (
-            contenido === "!undo_m" ||
-            contenido === "!undo_f"
-        ) {
-
-            partido.eventos.pop();
-
-            return message.reply(
-                "↩️ Último evento eliminado."
-            );
-
-        }
-
-        // =======================
         // LIVE
         // =======================
 
         if (
-            contenido.startsWith("!live_m") ||
-            contenido.startsWith("!live_f")
+            contenido.startsWith(`!live_${tipo}`)
         ) {
 
             const args =
@@ -231,14 +247,6 @@ ${marcador(partido)}
 
             const comentario =
                 args.slice(2).join(" ");
-
-            if (!minuto) {
-
-                return message.reply(
-                    "⚠️ Usa: !live_m 15 Dominio del Barça"
-                );
-
-            }
 
             partido.minuto = minuto;
 
@@ -267,59 +275,11 @@ ${comentario ? `🔥 ${comentario}` : ""}
         }
 
         // =======================
-        // COMENTARIO
-        // =======================
-
-        if (
-            contenido.startsWith("!comentario_m") ||
-            contenido.startsWith("!comentario_f")
-        ) {
-
-            const args =
-                contenido.split(" ");
-
-            const minuto =
-                args[1];
-
-            const comentario =
-                args.slice(2).join(" ");
-
-            if (
-                !minuto ||
-                !comentario
-            ) {
-
-                return message.reply(
-                    "⚠️ Usa: !comentario_m 23 Qué golazo"
-                );
-
-            }
-
-            return enviar(
-
-                canal,
-
-`🎙️ Comentario
-
-⌚ ${minuto}'
-
-${comentario}
-
-@LaCasaBlaugrana💙❤️`,
-
-                imagen
-
-            );
-
-        }
-
-        // =======================
         // GOL LOCAL
         // =======================
 
         if (
-            contenido.startsWith("!gol_local_m") ||
-            contenido.startsWith("!gol_local_f")
+            contenido.startsWith(`!gol_local_${tipo}`)
         ) {
 
             const args =
@@ -333,17 +293,6 @@ ${comentario}
 
             const asistencia =
                 args.slice(3).join(" ");
-
-            if (
-                !goleador ||
-                !minuto
-            ) {
-
-                return message.reply(
-                    "⚠️ Usa: !gol_local_m Lewandowski 23 Pedri"
-                );
-
-            }
 
             partido.marcadorLocal++;
 
@@ -365,7 +314,7 @@ ${comentario}
             const tituloGol =
             esFavorito
 
-            ? `🚨 GOOOOOOOOOOOOOOOOOL DEL ${partido.local.toUpperCase()} 🚨`
+            ? `🚨 GOOOOOOOOOOOOOL DEL ${partido.local.toUpperCase()} 🚨`
 
             : `⚽ Gol de ${partido.local}`;
 
@@ -381,10 +330,6 @@ ${marcador(partido)}
 
 ${partido.eventos.join("\n")}
 
-${esFavorito
-? `🔥 ${goleador} marca para ${partido.local}`
-: ""}
-
 @LaCasaBlaugrana💙❤️`,
 
                 imagen
@@ -398,8 +343,7 @@ ${esFavorito
         // =======================
 
         if (
-            contenido.startsWith("!gol_visitante_m") ||
-            contenido.startsWith("!gol_visitante_f")
+            contenido.startsWith(`!gol_visitante_${tipo}`)
         ) {
 
             const args =
@@ -410,17 +354,6 @@ ${esFavorito
 
             const minuto =
                 args[2];
-
-            if (
-                !goleador ||
-                !minuto
-            ) {
-
-                return message.reply(
-                    "⚠️ Usa: !gol_visitante_m Mbappé 45"
-                );
-
-            }
 
             partido.marcadorVisitante++;
 
@@ -434,7 +367,7 @@ ${esFavorito
             const tituloGol =
             esFavorito
 
-            ? `🚨 GOOOOOOOOOOOOOOOOOL DEL ${partido.visitante.toUpperCase()} 🚨`
+            ? `🚨 GOOOOOOOOOOOOOL DEL ${partido.visitante.toUpperCase()} 🚨`
 
             : `⚽ Gol de ${partido.visitante}`;
 
@@ -450,10 +383,6 @@ ${marcador(partido)}
 
 ${partido.eventos.join("\n")}
 
-${esFavorito
-? `🔥 ${goleador} marca para ${partido.visitante}`
-: ""}
-
 @LaCasaBlaugrana💙❤️`,
 
                 imagen
@@ -467,14 +396,14 @@ ${esFavorito
         // =======================
 
         if (
-            contenido.startsWith("!cambio_m") ||
-            contenido.startsWith("!cambio_f")
+            contenido.startsWith(`!cambio_${tipo}`)
         ) {
 
             const texto =
-                contenido
-                .replace("!cambio_m ", "")
-                .replace("!cambio_f ", "");
+                contenido.replace(
+                    `!cambio_${tipo} `,
+                    ""
+                );
 
             const primerEspacio =
                 texto.indexOf(" ");
@@ -495,8 +424,6 @@ ${esFavorito
                 const partes =
                     cambio.split(" - ");
 
-                if (partes.length < 2) continue;
-
                 const entra =
                     partes[0];
 
@@ -510,10 +437,6 @@ ${esFavorito
 `;
 
             }
-
-            partido.cambios.push(
-                resultado.trim()
-            );
 
             return enviar(
 
@@ -534,28 +457,26 @@ ${resultado}
         }
 
         // =======================
-        // MEDIO TIEMPO
+        // HT
         // =======================
 
         if (
-            contenido.startsWith("!ht_m") ||
-            contenido.startsWith("!ht_f")
+            contenido.startsWith(`!ht_${tipo}`)
         ) {
 
             const comentario =
-                contenido
-                .replace("!ht_m ", "")
-                .replace("!ht_f ", "");
+                contenido.replace(
+                    `!ht_${tipo} `,
+                    ""
+                );
 
             return enviar(
 
                 canal,
 
-`⏱️ MEDIO TIEMPO ⏱️
+`⏱️ MEDIO TIEMPO
 
 ${header(partido)}
-
-⌚ HT'
 
 ${marcador(partido)}
 
@@ -572,28 +493,26 @@ ${comentario}
         }
 
         // =======================
-        // SEGUNDO TIEMPO
+        // ST
         // =======================
 
         if (
-            contenido.startsWith("!st_m") ||
-            contenido.startsWith("!st_f")
+            contenido.startsWith(`!st_${tipo}`)
         ) {
 
             const comentario =
-                contenido
-                .replace("!st_m ", "")
-                .replace("!st_f ", "");
+                contenido.replace(
+                    `!st_${tipo} `,
+                    ""
+                );
 
             return enviar(
 
                 canal,
 
-`🔥 SEGUNDO TIEMPO 🔥
+`🔥 SEGUNDO TIEMPO
 
 ${header(partido)}
-
-⌚ 46'
 
 ${marcador(partido)}
 
@@ -610,24 +529,24 @@ ${comentario}
         }
 
         // =======================
-        // FINAL
+        // FT
         // =======================
 
         if (
-            contenido.startsWith("!ft_m") ||
-            contenido.startsWith("!ft_f")
+            contenido.startsWith(`!ft_${tipo}`)
         ) {
 
             const comentario =
-                contenido
-                .replace("!ft_m ", "")
-                .replace("!ft_f ", "");
+                contenido.replace(
+                    `!ft_${tipo} `,
+                    ""
+                );
 
             return enviar(
 
                 canal,
 
-`✅ FINALIZADO ✅
+`✅ FINALIZADO
 
 ${header(partido)}
 
