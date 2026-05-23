@@ -59,7 +59,7 @@ require("./partido")(client);
 require("./rata")(client);
 require("./tabla")(client);
 require("./XI")(client);
-require("./femenilive")(client);
+require("./XI F")(client);
 
 // =======================
 // LOGIN

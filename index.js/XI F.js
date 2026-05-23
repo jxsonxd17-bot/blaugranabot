@@ -1,7 +1,7 @@
 module.exports = (client) => {
 
     // ID DEL CANAL
-    const canalID = '1504132193532772542';
+    const canalID = '1505237014033993739';
 
     client.on("messageCreate", async (message) => {
 
@@ -18,7 +18,7 @@ module.exports = (client) => {
         // =======================
 
         if (
-            message.content.startsWith("!xi")
+            message.content.startsWith("!xif")
         ) {
 
             const rival =
