@@ -61,6 +61,7 @@ require("./tabla")(client);
 require("./XI")(client);
 require("./XI F")(client);
 require("./helplive")(client);
+require("./penales")(client);
 
 // =======================
 // LOGIN
