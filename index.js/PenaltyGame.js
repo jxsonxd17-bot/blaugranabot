@@ -185,6 +185,7 @@ module.exports = {
     crearPartida,
     obtenerPartida,
     mostrarTablero,
+    botonDisparo,
     botonesDisparo
-    
+
 };
