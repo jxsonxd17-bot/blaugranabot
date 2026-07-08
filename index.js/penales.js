@@ -7,49 +7,6 @@ const {
 
 const PenaltyGame = require("./PenaltyGame");
 
-// =======================
-// PARTIDAS ACTIVAS
-// =======================
-
-const partidas = new Map();
-
-// =======================
-// MOSTRAR TABLERO
-// =======================
-
-function mostrarTablero(partida) {
-
-    return new EmbedBuilder()
-
-        .setColor("Gold")
-
-        .setTitle("🏆 TANDA DE PENALES")
-
-        .setDescription(`
-
-━━━━━━━━━━━━━━━━━━
-
-🔴 <@${partida.jugador1}>
-
-${"⚪ ".repeat(partida.tiros1)}
-
-🆚
-
-🔵 <@${partida.jugador2}>
-
-${"⚪ ".repeat(partida.tiros2)}
-
-━━━━━━━━━━━━━━━━━━
-
-**Turno ${partida.turno} de 5**
-
-⚽ **Patea:** <@${partida.tira}>
-
-🧤 **Ataja:** <@${partida.ataja}>
-
-`);
-
-}
 
 module.exports = (client) => {
 
