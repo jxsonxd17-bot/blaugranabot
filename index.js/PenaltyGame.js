@@ -33,7 +33,9 @@ function crearPartida(canalID, jugador1, jugador2) {
         tira: jugador1,
         ataja: jugador2,
 
-        estado: "esperando_disparo"
+        estado: "esperando_disparo",
+
+        muerteSubita: false
 
     });
 
@@ -79,7 +81,11 @@ ${partida.penales2.join(" ")} ${"⚪ ".repeat(5 - partida.penales2.length)}
 
 ━━━━━━━━━━━━━━━━━━
 
-**Turno ${partida.turno} de 5**
+${
+    partida.muerteSubita
+        ? "☠️ **MUERTE SÚBITA**"
+        : `**Turno ${partida.turno} de 5**`
+}
 
 ⚽ **Patea:** <@${partida.tira}>
 
@@ -162,20 +168,11 @@ function botonesDisparo() {
 
         new ActionRowBuilder().addComponents(
 
-            new ButtonBuilder()
-                .setCustomId("disparo_CI")
-                .setLabel("⬅️")
-                .setStyle(ButtonStyle.Secondary),
 
             new ButtonBuilder()
                 .setCustomId("disparo_CC")
                 .setLabel("⏺️")
                 .setStyle(ButtonStyle.Secondary),
-
-            new ButtonBuilder()
-                .setCustomId("disparo_CD")
-                .setLabel("➡️")
-                .setStyle(ButtonStyle.Secondary)
 
         ),
 
@@ -232,19 +229,9 @@ function botonesAtajada() {
         new ActionRowBuilder().addComponents(
 
             new ButtonBuilder()
-                .setCustomId("atajada_CI")
-                .setLabel("⬅️")
-                .setStyle(ButtonStyle.Primary),
-
-            new ButtonBuilder()
                 .setCustomId("atajada_CC")
                 .setLabel("⏺️")
                 .setStyle(ButtonStyle.Primary),
-
-            new ButtonBuilder()
-                .setCustomId("atajada_CD")
-                .setLabel("➡️")
-                .setStyle(ButtonStyle.Primary)
 
         ),
 
@@ -344,6 +331,29 @@ function resultadoPenal(canalID) {
 
     if (!partida) return null;
 
+    // Solo algunas zonas pueden ir afuera
+const puedeIrAfuera = [
+
+    "AI",
+    "AC",
+    "AD",
+    "BI",
+    "BD"
+
+];
+
+if (
+
+    puedeIrAfuera.includes(partida.disparo) &&
+
+    Math.random() < 0.15
+
+) {
+
+    return "AFUERA";
+
+}
+
     if (partida.disparo === partida.atajada) {
         return "ATAJADA";
     }
@@ -381,14 +391,14 @@ function finalizarTurno(canalID, resultado) {
 
         if (resultado === "GOL") {
 
-            partida.goles1++;
-            partida.penales1.push("🟢");
+    partida.goles1++;
+    partida.penales1.push("🟢");
 
-        } else {
+    } else {
 
-            partida.penales1.push("🔴");
+    partida.penales1.push("🔴");
 
-        }
+}
 
         partida.tira = partida.jugador2;
         partida.ataja = partida.jugador1;
@@ -458,6 +468,153 @@ function obtenerGanador(canalID) {
 
 }
 
+// =======================
+// ¿YA ES IMPOSIBLE EMPATAR?
+// =======================
+
+function victoriaAnticipada(canalID) {
+
+    const partida = partidas.get(canalID);
+
+    if (!partida) return null;
+
+    const restantes1 = 5 - partida.penales1.length;
+    const restantes2 = 5 - partida.penales2.length;
+
+    if (partida.goles1 > partida.goles2 + restantes2) {
+        return partida.jugador1;
+    }
+
+    if (partida.goles2 > partida.goles1 + restantes1) {
+        return partida.jugador2;
+    }
+
+    return null;
+
+}
+
+// =======================
+// ACTIVAR MUERTE SÚBITA
+// =======================
+
+function activarMuerteSubita(canalID) {
+
+    const partida = partidas.get(canalID);
+
+    if (!partida) return;
+
+    partida.muerteSubita = true;
+
+}
+
+// =======================
+// ¿GANÓ EN MUERTE SÚBITA?
+// =======================
+
+function ganadorMuerteSubita(canalID) {
+
+    const partida = partidas.get(canalID);
+
+    if (!partida) return null;
+
+    if (!partida.muerteSubita) return null;
+
+    // Ambos deben haber pateado el mismo número
+    if (partida.penales1.length !== partida.penales2.length) {
+
+        return null;
+
+    }
+
+    const ultimo1 = partida.penales1[partida.penales1.length - 1];
+    const ultimo2 = partida.penales2[partida.penales2.length - 1];
+
+    if (ultimo1 === ultimo2) {
+
+        return null;
+
+    }
+
+    if (ultimo1 === "🟢") {
+
+        return partida.jugador1;
+
+    }
+
+    return partida.jugador2;
+
+}
+
+// =======================
+// ELIMINAR PARTIDA
+// =======================
+
+function eliminarPartida(canalID) {
+
+    partidas.delete(canalID);
+
+}
+
+// =======================
+// EMBED FINAL
+// =======================
+
+function mostrarResultadoFinal(partida, ganador) {
+
+    return new EmbedBuilder()
+
+        .setColor("Gold")
+
+        .setTitle("🏆 ¡TANDA FINALIZADA!")
+
+        .setDescription(`
+
+━━━━━━━━━━━━━━━━━━
+
+🔴 <@${partida.jugador1}>
+
+${partida.penales1.join(" ")}
+
+🆚
+
+🔵 <@${partida.jugador2}>
+
+${partida.penales2.join(" ")}
+
+━━━━━━━━━━━━━━━━━━
+
+# 🏆 Ganador
+
+<@${ganador}>
+
+`);
+
+}
+
+// =======================
+// SORTEAR QUIÉN EMPIEZA
+// =======================
+
+function sortearInicio(canalID) {
+
+    const partida = partidas.get(canalID);
+
+    if (!partida) return;
+
+    if (Math.random() < 0.5) {
+
+        partida.tira = partida.jugador1;
+        partida.ataja = partida.jugador2;
+
+    } else {
+
+        partida.tira = partida.jugador2;
+        partida.ataja = partida.jugador1;
+
+    }
+
+}
+
 module.exports = {
 
     crearPartida,
@@ -484,6 +641,16 @@ module.exports = {
     finalizarTurno,
 
     terminoPartida,
-    obtenerGanador
+    obtenerGanador,
+
+    victoriaAnticipada,
+
+    activarMuerteSubita,
+
+    ganadorMuerteSubita,
+
+    eliminarPartida,
+
+    sortearInicio,
 
 };

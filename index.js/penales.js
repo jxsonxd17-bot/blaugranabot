@@ -6,6 +6,8 @@ const {
 } = require("discord.js");
 
 const PenaltyGame = require("./PenaltyGame");
+const gifs = require("./PenaltyGifs");
+const winnerGifs = require("./WinnerGifs");
 
 
 module.exports = (client) => {
@@ -116,7 +118,13 @@ PenaltyGame.crearPartida(
 
 );
 
-const partida = PenaltyGame.obtenerPartida(interaction.channel.id);
+PenaltyGame.sortearInicio(
+    interaction.channel.id
+);
+
+const partida = PenaltyGame.obtenerPartida(
+    interaction.channel.id
+);
 
 const embed = PenaltyGame.mostrarTablero(partida);
 
@@ -232,6 +240,7 @@ if (interaction.customId.startsWith("disparo_")) {
         zona
     );
 
+
     PenaltyGame.pasarAlArquero(interaction.channel.id);
 
 const embed = PenaltyGame.mostrarTablero(partida);
@@ -289,6 +298,10 @@ if (interaction.customId.startsWith("atajada_")) {
         interaction.channel.id
     );
 
+    const zonaDisparo = PenaltyGame.obtenerDisparo(
+    interaction.channel.id
+);
+
     PenaltyGame.finalizarTurno(
 
     interaction.channel.id,
@@ -303,29 +316,72 @@ PenaltyGame.limpiarJugada(
 
 );
 
-if (PenaltyGame.terminoPartida(interaction.channel.id)) {
+const ganadorMS = PenaltyGame.ganadorMuerteSubita(
+    interaction.channel.id
+);
 
-    const ganador = PenaltyGame.obtenerGanador(interaction.channel.id);
+if (ganadorMS) {
 
-    if (ganador === "EMPATE") {
+    PenaltyGame.eliminarPartida(
+    interaction.channel.id
+);
 
-        return interaction.update({
+    const partidaFinal = PenaltyGame.obtenerPartida(
+    interaction.channel.id
+);
 
-            content: "🤝 ¡EMPATE!\n\n🔥 Se viene la muerte súbita.",
+const embedFinal = PenaltyGame.mostrarResultadoFinal(
+    partidaFinal,
+    ganadorMS
+);
 
-            embeds: [],
+const gifGanador = winnerGifs[
+    Math.floor(Math.random() * winnerGifs.length)
+];
 
-            components: []
+embedFinal.setImage(gifGanador);
 
-        });
+PenaltyGame.eliminarPartida(
+    interaction.channel.id
+);
 
-    }
+return interaction.update({
+
+    embeds: [embedFinal],
+
+    components: []
+
+});
+
+}
+
+const ganadorAnticipado =
+    PenaltyGame.victoriaAnticipada(interaction.channel.id);
+
+if (ganadorAnticipado) {
+
+    const partidaFinal = PenaltyGame.obtenerPartida(
+        interaction.channel.id
+    );
+
+    const embedFinal = PenaltyGame.mostrarResultadoFinal(
+        partidaFinal,
+        ganadorAnticipado
+    );
+
+    const gifGanador = winnerGifs[
+    Math.floor(Math.random() * winnerGifs.length)
+];
+
+embedFinal.setImage(gifGanador);
+
+    PenaltyGame.eliminarPartida(
+        interaction.channel.id
+    );
 
     return interaction.update({
 
-        content: `🏆 ¡<@${ganador}> ganó la tanda de penales!`,
-
-        embeds: [],
+        embeds: [embedFinal],
 
         components: []
 
@@ -333,16 +389,144 @@ if (PenaltyGame.terminoPartida(interaction.channel.id)) {
 
 }
 
+if (PenaltyGame.terminoPartida(interaction.channel.id)) {
+
+    const ganador = PenaltyGame.obtenerGanador(interaction.channel.id);
+
+    if (ganador === "EMPATE") {
+
+        PenaltyGame.activarMuerteSubita(
+            interaction.channel.id
+        );
+
+        const partida = PenaltyGame.obtenerPartida(
+            interaction.channel.id
+        );
+
+        const embed = PenaltyGame.mostrarTablero(partida);
+
+        return interaction.update({
+
+            content:
+"🤝 ¡EMPATE!\n\n☠️ ¡Comienza la muerte súbita!",
+
+            embeds: [embed],
+
+            components: [
+
+                PenaltyGame.botonDisparo()
+
+            ]
+
+        });
+
+    }
+
+    const partida = PenaltyGame.obtenerPartida(
+    interaction.channel.id
+);
+
+const embed =
+    PenaltyGame.mostrarResultadoFinal(
+        partida,
+        ganador
+    );
+
+    const gifGanador = winnerGifs[
+    Math.floor(Math.random() * winnerGifs.length)
+];
+
+embedFinal.setImage(gifGanador);
+
+PenaltyGame.eliminarPartida(
+    interaction.channel.id
+);
+
+return interaction.update({
+
+    embeds: [embed],
+
+    components: []
+
+});
+
+return interaction.update({
+
+    embeds: [embed],
+
+    components: []
+
+});
+
+}
+
 const nuevaPartida = PenaltyGame.obtenerPartida(interaction.channel.id);
 
 const embed = PenaltyGame.mostrarTablero(nuevaPartida);
 
+let gif = "";
+
+if (resultado === "GOL") {
+
+    const lista = gifs.goles[zonaDisparo];
+
+    if (lista.length > 0) {
+
+        gif = lista[
+            Math.floor(Math.random() * lista.length)
+        ];
+
+    }
+
+}
+else if (resultado === "ATAJADA") {
+
+    const lista = gifs.atajadas[zonaDisparo];
+
+    if (lista.length > 0) {
+
+        gif = lista[
+            Math.floor(Math.random() * lista.length)
+        ];
+
+    }
+
+}
+else {
+
+    const lista = gifs.afuera[zonaDisparo];
+
+if (lista && lista.length > 0) {
+
+    gif = lista[
+        Math.floor(Math.random() * lista.length)
+    ];
+
+}
+
+}
+
+let mensaje = "";
+
+if (resultado === "GOL") {
+
+    mensaje = "⚽ **¡¡GOOOOOOL!!**";
+
+} else if (resultado === "ATAJADA") {
+
+    mensaje = "🧤 **¡¡ATAJADÓN!!**";
+
+} else {
+
+    mensaje = "❌ **¡¡LA MANDÓ AFUERA!!**";
+
+}
+
+embed.setImage(gif);
+
 return interaction.update({
 
-    content:
-        resultado === "GOL"
-            ? "⚽ **¡¡GOOOOOOL!!**"
-            : "🧤 **¡¡ATAJADÓN!!**",
+    content: mensaje,
 
     embeds: [embed],
 
