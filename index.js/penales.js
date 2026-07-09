@@ -135,6 +135,227 @@ const embed = PenaltyGame.mostrarTablero(partida);
 
     }
 
+// ==========================
+// BOTÓN ELEGIR DISPARO
+// ==========================
+
+if (interaction.customId === "elegir_disparo") {
+
+    const partida = PenaltyGame.obtenerPartida(interaction.channel.id);
+
+    if (!partida) {
+        return interaction.reply({
+            content: "❌ No hay ninguna partida activa.",
+            ephemeral: true
+        });
+    }
+
+    if (interaction.user.id !== partida.tira) {
+        return interaction.reply({
+            content: "❌ Aún no es tu turno para disparar.",
+            ephemeral: true
+        });
+    }
+
+    return interaction.reply({
+        content: "🎯 Elige la zona donde quieres disparar:",
+        components: PenaltyGame.botonesDisparo(),
+        ephemeral: true
+    });
+
+}
+
+// ==========================
+// BOTÓN ELEGIR ATAJADA
+// ==========================
+
+if (interaction.customId === "elegir_atajada") {
+
+    const partida = PenaltyGame.obtenerPartida(interaction.channel.id);
+
+    if (!partida) {
+
+        return interaction.reply({
+            content: "❌ No hay ninguna partida activa.",
+            ephemeral: true
+        });
+
+    }
+
+    if (interaction.user.id !== partida.ataja) {
+
+        return interaction.reply({
+            content: "❌ Aún no es tu turno para atajar.",
+            ephemeral: true
+        });
+
+    }
+
+    return interaction.reply({
+
+        content: "🧤 Elige hacia dónde lanzarte:",
+
+        components: PenaltyGame.botonesAtajada(),
+
+        ephemeral: true
+
+    });
+
+}
+
+// ==========================
+// ELEGIR ZONA DE DISPARO
+// ==========================
+
+if (interaction.customId.startsWith("disparo_")) {
+
+    const partida = PenaltyGame.obtenerPartida(interaction.channel.id);
+
+    if (!partida) {
+        return interaction.reply({
+            content: "❌ No hay ninguna partida activa.",
+            ephemeral: true
+        });
+    }
+
+    if (interaction.user.id !== partida.tira) {
+        return interaction.reply({
+            content: "❌ No puedes elegir el disparo de otro jugador.",
+            ephemeral: true
+        });
+    }
+
+    const zona = interaction.customId.replace("disparo_", "");
+
+    PenaltyGame.guardarDisparo(
+        interaction.channel.id,
+        zona
+    );
+
+    PenaltyGame.pasarAlArquero(interaction.channel.id);
+
+const embed = PenaltyGame.mostrarTablero(partida);
+
+return interaction.update({
+
+    content: "",
+
+    embeds: [embed],
+
+    components: [
+
+        PenaltyGame.botonAtajada()
+
+    ]
+
+});
+
+}
+
+// ==========================
+// ELEGIR ZONA DE ATAJADA
+// ==========================
+
+if (interaction.customId.startsWith("atajada_")) {
+
+    const partida = PenaltyGame.obtenerPartida(interaction.channel.id);
+
+    if (!partida) {
+
+        return interaction.reply({
+            content: "❌ No hay ninguna partida activa.",
+            ephemeral: true
+        });
+
+    }
+
+    if (interaction.user.id !== partida.ataja) {
+
+        return interaction.reply({
+            content: "❌ No es tu turno para atajar.",
+            ephemeral: true
+        });
+
+    }
+
+    const zona = interaction.customId.replace("atajada_", "");
+
+    PenaltyGame.guardarAtajada(
+        interaction.channel.id,
+        zona
+    );
+
+    const resultado = PenaltyGame.resultadoPenal(
+        interaction.channel.id
+    );
+
+    PenaltyGame.finalizarTurno(
+
+    interaction.channel.id,
+
+    resultado
+
+);
+
+PenaltyGame.limpiarJugada(
+
+    interaction.channel.id
+
+);
+
+if (PenaltyGame.terminoPartida(interaction.channel.id)) {
+
+    const ganador = PenaltyGame.obtenerGanador(interaction.channel.id);
+
+    if (ganador === "EMPATE") {
+
+        return interaction.update({
+
+            content: "🤝 ¡EMPATE!\n\n🔥 Se viene la muerte súbita.",
+
+            embeds: [],
+
+            components: []
+
+        });
+
+    }
+
+    return interaction.update({
+
+        content: `🏆 ¡<@${ganador}> ganó la tanda de penales!`,
+
+        embeds: [],
+
+        components: []
+
+    });
+
+}
+
+const nuevaPartida = PenaltyGame.obtenerPartida(interaction.channel.id);
+
+const embed = PenaltyGame.mostrarTablero(nuevaPartida);
+
+return interaction.update({
+
+    content:
+        resultado === "GOL"
+            ? "⚽ **¡¡GOOOOOOL!!**"
+            : "🧤 **¡¡ATAJADÓN!!**",
+
+    embeds: [embed],
+
+    components: [
+
+        PenaltyGame.botonDisparo()
+
+    ]
+
+});
+
+}
+
     // ==========================
     // BOTÓN RECHAZAR
     // ==========================
