@@ -143,6 +143,152 @@ const embed = PenaltyGame.mostrarTablero(partida);
 
     }
 
+
+    // ==========================
+// CARA O SELLO
+// ==========================
+
+if (
+    interaction.customId === "cara" ||
+    interaction.customId === "sello"
+) {
+
+    const eleccion = interaction.customId;
+
+    const resultado =
+        Math.random() < 0.5
+            ? "cara"
+            : "sello";
+
+    const datos = interaction.message.content.split("|");
+
+    const retadorID = datos[0];
+    const rivalID = datos[1];
+
+    let ganadorSorteo;
+
+    if (eleccion === resultado) {
+
+        ganadorSorteo = rivalID;
+
+    } else {
+
+        ganadorSorteo = retadorID;
+
+    }
+
+    const embed = new EmbedBuilder()
+
+        .setColor("Gold")
+
+        .setTitle("🔥 Resultado del sorteo")
+
+        .setDescription(
+
+`La moneda cayó en **${resultado.toUpperCase()}**.
+
+🏆 Ganó el sorteo: <@${ganadorSorteo}>
+
+Ahora elige qué deseas hacer.`
+
+        );
+
+    return interaction.update({
+
+        content: `${retadorID}|${rivalID}|${ganadorSorteo}`,
+
+        embeds: [embed],
+
+        components: [
+
+            PenaltyGame.botonesElegirInicio()
+
+        ]
+
+    });
+
+}
+
+// ==========================
+// ELEGIR QUIÉN EMPIEZA
+// ==========================
+
+if (
+    interaction.customId === "empezar_pateando" ||
+    interaction.customId === "empezar_atajando"
+) {
+
+    const datos = interaction.message.content.split("|");
+
+    const retadorID = datos[0];
+    const rivalID = datos[1];
+    const ganadorSorteo = datos[2];
+
+    // Solo el ganador puede elegir
+    if (interaction.user.id !== ganadorSorteo) {
+
+        return interaction.reply({
+
+            content: "❌ Solo el ganador del sorteo puede elegir.",
+
+            ephemeral: true
+
+        });
+
+    }
+
+    PenaltyGame.crearPartida(
+
+        interaction.channel.id,
+
+        retadorID,
+
+        rivalID
+
+    );
+
+    const partida = PenaltyGame.obtenerPartida(
+        interaction.channel.id
+    );
+
+    if (interaction.customId === "empezar_pateando") {
+
+        partida.tira = ganadorSorteo;
+
+        partida.ataja =
+            ganadorSorteo === retadorID
+                ? rivalID
+                : retadorID;
+
+    } else {
+
+        partida.ataja = ganadorSorteo;
+
+        partida.tira =
+            ganadorSorteo === retadorID
+                ? rivalID
+                : retadorID;
+
+    }
+
+    const embed = PenaltyGame.mostrarTablero(partida);
+
+    return interaction.update({
+
+        content: "",
+
+        embeds: [embed],
+
+        components: [
+
+            PenaltyGame.botonDisparo()
+
+        ]
+
+    });
+
+}
+
 // ==========================
 // BOTÓN ELEGIR DISPARO
 // ==========================
@@ -165,11 +311,15 @@ if (interaction.customId === "elegir_disparo") {
         });
     }
 
-    return interaction.reply({
-        content: "🎯 Elige la zona donde quieres disparar:",
-        components: PenaltyGame.botonesDisparo(),
-        ephemeral: true
-    });
+    const embed = PenaltyGame.mostrarTablero(partida);
+
+return interaction.update({
+
+    embeds: [embed],
+
+    components: PenaltyGame.botonesDisparo()
+
+});
 
 }
 
@@ -199,15 +349,15 @@ if (interaction.customId === "elegir_atajada") {
 
     }
 
-    return interaction.reply({
+    const embed = PenaltyGame.mostrarTablero(partida);
 
-        content: "🧤 Elige hacia dónde lanzarte:",
+return interaction.update({
 
-        components: PenaltyGame.botonesAtajada(),
+    embeds: [embed],
 
-        ephemeral: true
+    components: PenaltyGame.botonesAtajada()
 
-    });
+});
 
 }
 

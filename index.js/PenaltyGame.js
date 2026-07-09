@@ -615,6 +615,46 @@ function sortearInicio(canalID) {
 
 }
 
+function botonesMoneda() {
+
+    return new ActionRowBuilder()
+
+        .addComponents(
+
+            new ButtonBuilder()
+                .setCustomId("cara")
+                .setLabel("🟡 Cara")
+                .setStyle(ButtonStyle.Primary),
+
+            new ButtonBuilder()
+                .setCustomId("sello")
+                .setLabel("⚫ Sello")
+                .setStyle(ButtonStyle.Secondary)
+
+        );
+
+}
+
+function botonesElegirInicio() {
+
+    return new ActionRowBuilder()
+
+        .addComponents(
+
+            new ButtonBuilder()
+                .setCustomId("empezar_pateando")
+                .setLabel("⚽ Patear primero")
+                .setStyle(ButtonStyle.Success),
+
+            new ButtonBuilder()
+                .setCustomId("empezar_atajando")
+                .setLabel("🧤 Atajar primero")
+                .setStyle(ButtonStyle.Primary)
+
+        );
+
+}
+
 module.exports = {
 
     crearPartida,
@@ -652,5 +692,8 @@ module.exports = {
     eliminarPartida,
 
     sortearInicio,
+
+    botonesMoneda,
+botonesElegirInicio,
 
 };
