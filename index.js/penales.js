@@ -219,6 +219,18 @@ if (interaction.customId.startsWith("disparo_")) {
 
     const partida = PenaltyGame.obtenerPartida(interaction.channel.id);
 
+    if (interaction.user.id !== partida.tira) {
+
+    return interaction.reply({
+
+        content: "❌ Solo el jugador que debe patear puede elegir el disparo.",
+
+        ephemeral: true
+
+    });
+
+}
+
     if (!partida) {
         return interaction.reply({
             content: "❌ No hay ninguna partida activa.",
@@ -233,7 +245,7 @@ if (interaction.customId.startsWith("disparo_")) {
         });
     }
 
-    const zona = interaction.customId.replace("disparo_", "");
+    const zona = interaction.customId.replace("disparo_", "");  
 
     PenaltyGame.guardarDisparo(
         interaction.channel.id,
@@ -268,6 +280,18 @@ return interaction.update({
 if (interaction.customId.startsWith("atajada_")) {
 
     const partida = PenaltyGame.obtenerPartida(interaction.channel.id);
+
+    if (interaction.user.id !== partida.ataja) {
+
+    return interaction.reply({
+
+        content: "❌ Solo el arquero puede elegir la atajada.",
+
+        ephemeral: true
+
+    });
+
+}
 
     if (!partida) {
 
